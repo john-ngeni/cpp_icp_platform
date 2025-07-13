@@ -1,0 +1,25 @@
+feat: Initialize Cool Planet Platform ICP architecture foundation
+
+Strategic Architecture Pivot: Ethereum-centric → ICP/Polygon Hybrid
+
+This initial commit establishes the foundational architecture for the Cool Planet 
+Platform (CPP) built on Internet Computer Protocol (ICP) with Polygon DID 
+integration, representing a strategic pivot to a cooperative, post-extractive paradigm.
+
+## Key Components:
+
+### 🏛️ Core Architecture
+- **README.md**: Repository overview and strategic context
+- **docs/architecture/**: Foundational architectural documentation
+  - `community-strategy.md`: CPP community engagement strategy
+  - `platform-comparison.md`: Platform evaluation framework
+
+### 🗄️ Archive Management
+- **trashcan/**: Superseded content from previous architecture evaluations
+  - Historical blockchain analysis preserved for reference
+
+## Architecture Vision:
+- **Primary compute**: ICP canisters for core platform functionality
+- **Identity layer**: Polygon DID registry with Internet Identity integration
+- **Storage paradigm**: ICP-native storage approach
+- **Chain fusion**: Cross-chain interaction via ICP infrastructure
