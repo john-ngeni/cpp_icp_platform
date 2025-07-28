@@ -336,9 +336,9 @@ export default defineConfig({
 
 #### **Disadvantages**
 - ⚠️ **Bundle Size**: Larger than Svelte, smaller than React
-- ⚠️ **Team Experience**: May need Vue training for team
-- ⚠️ **IC Integration**: Less proven IC agent integration
-- ⚠️ **Community**: Smaller than React community
+- ✅ **Team Experience**: May need Vue training for team
+- ✅ **IC Integration**: Less proven IC agent integration
+- ✅ **Community**: Smaller than React community
 
 ### **Option B: Dynamic Workflow (React + Azle Canister)**
 
@@ -660,13 +660,13 @@ The newsletter project encountered significant SSL certificate issues that influ
 
 ## Conclusion
 
-**Recommended Architecture: Unified V0.dev + React + Vite Approach**
+**Recommended Architecture: Hybrid Builder.io + V0.dev + React + Vite Approach**
 
-### **Unified Technology Stack: V0.dev + React + Vite + Asset Canisters**
+### **Hybrid Technology Stack: Optimized for Content Type**
 
-**All frontend development uses the same technology stack:**
-- **Frontend Framework**: React + Vite (for both static and dynamic content)
-- **AI-Powered Development**: V0.dev (for both static and dynamic content)
+**Different tools for different content types:**
+- **Dynamic Content**: V0.dev + React + Vite (member platform, real-time features)
+- **Static Content**: Builder.io + React + Vite (public site, marketing pages)
 - **Deployment**: Asset Canisters (for SSL certificate support)
 - **Backend**: Separate Motoko/Azle canisters for business logic
 
@@ -675,33 +675,34 @@ The newsletter project encountered significant SSL certificate issues that influ
 - **Workflow**: BDD → Claude → V0.dev → React Components → IC Deployment
 - **Content**: Gated member content, real-time updates, personalized experiences
 - **Functionality**: II authentication, wallet management, KYC, portfolio
-- **Rationale**: BDD-first workflow with AI-powered development and IC community dominance
+- **Rationale**: BDD-first workflow with AI-powered development for complex user flows
 
 ### **Phase 2: Static Public Site (`coolplanet-foundation.org`)**
-- **Technology**: React + Vite + V0.dev → Asset Canister
-- **Workflow**: V0.dev AI Editor → React + Vite Build → IC Deployment
-- **Content**: Public content, SEO-optimized, legal/terms pages
+- **Technology**: React + Vite + Builder.io → Asset Canister
+- **Workflow**: Builder.io Visual Editor → React + Vite Build → IC Deployment
+- **Content**: Public content, SEO-optimized, legal/terms pages, marketing materials
 - **Functionality**: Login/donate buttons that redirect to member platform
-- **Rationale**: Same technology stack, optimized for static content
+- **Rationale**: Visual design-first approach for static marketing and informational content
 
 ### **ENS Integration Strategy**
 - **ENS Mirror**: `cpf.nft` mirrors `coolplanet-foundation.org` DNS (ICANN independence)
 - **NFT Models**: `cpp1.members.coolplanet-foundation.org`, `cpp2.members.coolplanet-foundation.org`
 - **Bundle Holders**: Publish to their ENS subdomains following CPP standards
 
-### **Why This Unified Approach:**
+### **Why This Hybrid Approach:**
 
-1. **Single Technology Stack**: Same tools and workflows for all frontend development
-2. **BDD-First Development**: Start with behavior specifications you understand
-3. **AI-Powered Development**: V0.dev provides superior BDD scenario understanding
-4. **Claude Integration**: AI assistance for component generation and refinement
-5. **IC Community Dominance**: React + Vite is the standard IC pattern
+1. **Optimized for Content Type**: V0.dev for dynamic BDD-driven features, Builder.io for static visual design
+2. **BDD-First Development**: V0.dev excels at complex user flows and behavior specifications
+3. **Visual Design Excellence**: Builder.io provides superior visual design capabilities for static content
+4. **Claude Integration**: AI assistance for both component generation (V0.dev) and visual design (Builder.io)
+5. **IC Community Dominance**: React + Vite is the standard IC pattern for both approaches
 6. **SSL Certificate Support**: Asset canisters provide automatic SSL for all domains
-7. **Consistent Experience**: Unified look and feel across all platforms
+7. **Cost Optimization**: Builder.io Personal ($19/month) for static content, V0.dev Pro ($20/month) for dynamic content
 
 ### **Technology Choices:**
 - **Frontend Framework**: React + Vite (for both static and dynamic content)
-- **AI-Powered Development**: V0.dev (for both static and dynamic content)
+- **Dynamic Development**: V0.dev (for member platform and real-time features)
+- **Static Development**: Builder.io (for public site and marketing content)
 - **Deployment**: Asset Canisters (for SSL certificate support)
 - **Backend**: Motoko canisters for core business logic
 - **External Integration**: Azle canisters for provider APIs and webhooks
@@ -729,12 +730,13 @@ The newsletter project encountered significant SSL certificate issues that influ
 
 #### **Phase 2: Static Public Site (Weeks 9-12)**
 ```bash
-# 1. V0.dev AI Development
-# Create components using V0.dev AI editor
+# 1. Builder.io Visual Development
+# Create visual design in Builder.io
 # Optimize for SEO and performance
+# Design marketing pages and informational content
 
 # 2. React + Vite Build
-# Copy React components from V0.dev
+# Export React components from Builder.io
 # Build static site with React + Vite
 # Configure for IC asset canister deployment
 
@@ -744,17 +746,39 @@ The newsletter project encountered significant SSL certificate issues that influ
 ```
 
 ### **Domain Strategy:**
-- **Public**: `coolplanet-foundation.org` (V0.dev + React + Vite static build)
+- **Public**: `coolplanet-foundation.org` (Builder.io + React + Vite static build)
 - **Member Platform**: `members.coolplanet-foundation.org` (V0.dev + React + Vite dynamic build)
 - **ENS Mirror**: `cpf.nft` mirrors `coolplanet-foundation.org` DNS (ICANN independence)
 - **NFT Models**: `cpp1.members.coolplanet-foundation.org`, `cpp2.members.coolplanet-foundation.org`
 
+### **Tool Selection Rationale:**
+
+#### **V0.dev for Dynamic Content (Member Platform)**
+- **BDD Integration**: Direct mapping from BDD scenarios to components
+- **Complex User Flows**: Excellent for KYC, wallet management, portfolio features
+- **Real-time Updates**: Superior for dynamic, personalized content
+- **AI-Powered Development**: Natural language component generation
+- **Production-Ready Code**: Complete React components with styling
+
+#### **Builder.io for Static Content (Public Site)**
+- **Visual Design Excellence**: Superior for marketing and informational content
+- **SEO Optimization**: Built-in SEO tools and performance optimization
+- **Marketing Focus**: Perfect for landing pages, about pages, legal content
+- **Visual Workflow**: Drag-and-drop design for non-technical content creation
+- **Brand Consistency**: Visual design system for consistent branding
+
+### **Cost Analysis:**
+- **V0.dev Pro**: $20/month for dynamic member platform development
+- **Builder.io Personal**: $19/month for static public site development
+- **Total Development Cost**: $39/month (6 months = $234)
+- **Production Cost**: $0 (build-time only workflow)
+
 **Next Steps:**
-1. **Phase 1**: Set up unified V0.dev + React + Vite workflow
-2. **Phase 1**: Write comprehensive BDD scenarios for member platform
+1. **Phase 1**: Set up V0.dev + React + Vite workflow for member platform
+2. **Phase 1**: Write comprehensive BDD scenarios for dynamic features
 3. **Phase 1**: Implement II authentication, wallet, KYC, portfolio features
-4. **Phase 2**: Create static public site using same V0.dev + React + Vite stack
-5. **Phase 2**: Design integrated look and feel across both domains
+4. **Phase 2**: Set up Builder.io + React + Vite workflow for public site
+5. **Phase 2**: Create visual design and marketing content with Builder.io
 6. **Future**: Design CPP standards for bundle holder ENS integration
 
-This unified architecture provides consistent technology stack across all frontend development while leveraging V0.dev's AI-powered development capabilities and React + Vite's IC community dominance. 
+This hybrid architecture optimizes tool selection for content type while maintaining React + Vite consistency and leveraging the strengths of both V0.dev (BDD-driven development) and Builder.io (visual design excellence). 
