@@ -53,4 +53,6 @@ logs/
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+commit_message.txt
+commit_*.txt 

@@ -1,10 +1,34 @@
 # Frontend Technology Evaluation for CPP Platform
 
-## Executive Summary
+---
+
+## ⚠️ OUTDATED DOCUMENT WARNING
+
+**Date of Obsolescence:** 2025-11-14
+
+**This document describes a React + V0.dev approach that is NO LONGER the current direction.**
+
+**Current Technology Direction (as of Nov 2024):**
+- **Svelte**: Primary frontend framework for most components
+- **React**: Newsletter Admin only (legacy/existing codebase)
+- **builder.io**: Status uncertain for Svelte integration
+- **Motoko**: Backend canisters
+- **Rust**: Payment bridge canister
+
+**Why Keep This Document?**
+- Historical context for technology decision evolution
+- Understanding of IC deployment patterns (still relevant)
+- Asset canister concepts (still applicable to Svelte)
+
+**For Current Architecture:** See [canister-architecture-diagram.md](./canister-architecture-diagram.md)
+
+---
+
+## Executive Summary (HISTORICAL - React + V0.dev Approach)
 
 This document evaluates frontend technology options for the Cool Planet Platform (CPP) Progressive Web App (PWA), incorporating critical lessons learned from SSL certificate investigations and Internet Computer (IC) deployment best practices.
 
-**Key Finding**: Based on SSL certificate investigation results, **React with IC Asset Canister** is the recommended approach for optimal SSL certificate support and deployment simplicity.
+**Key Finding (OUTDATED)**: Based on SSL certificate investigation results, **React with IC Asset Canister** is the recommended approach for optimal SSL certificate support and deployment simplicity.
 
 **Domain**: This PWA will be served on the main `coolplanet-foundation.org` domain, not a subdomain.
 
@@ -20,63 +44,64 @@ This document evaluates frontend technology options for the Cool Planet Platform
 
 **Vite is included in all options** because it's the recommended build tool for modern frontend development on IC, regardless of the chosen framework.
 
-## Architectural Choice: Frontend Deployment Strategy
+## Framework Choice: Static Site PWA with BDD AI Workflow
 
-The framework choice is fundamentally about **how to deploy the frontend**:
+The framework choice is about **which static site generator works best with BDD AI workflow on IC**:
 
-### **Option A: Next.js + Asset Canister**
+### **Next.js**
 ```
-Frontend: Next.js → Static Export → Asset Canister ("type": "assets")
-Backend: Separate Motoko/Azle canisters
-SSL: ✅ Automatic via asset canister
+Frontend: Next.js → Static Export → Asset Canister
+Backend: Separate Motoko canister for core business logic
+External Integration: Separate Azle canister for provider APIs and webhooks
 ```
 
 **Advantages:**
-- ✅ **SSL Certificate Support**: Automatic provisioning
 - ✅ **Superior Static Export**: Next.js excels at static generation
 - ✅ **Built-in Optimizations**: Image, font, performance optimizations
+- ✅ **SEO**: Built-in SEO optimizations
 - ✅ **Claude Code Integration**: Excellent AI-assisted development support
+- ✅ **Performance**: Excellent performance with static generation
+- ✅ **PWA Support**: Excellent PWA capabilities
 
 **Disadvantages:**
-- ⚠️ **Complexity**: More complex build and deployment process
-- ⚠️ **Bundle Size**: Larger than React + Vite
-- ❌ **Limited Builder.io Integration**: Builder.io works best with React + Vite
+- ❌ **Complexity**: More complex build and deployment process
+- ❌ **Bundle Size**: Larger than React + Vite
+- ❌ **IC Community**: Less established patterns for IC integration
+- ❌ **Learning Curve**: Requires understanding Next.js conventions
+- ❌ **V0.dev Integration**: Limited BDD AI workflow support
 
-### **Option B: React + Vite + V0.dev + Azle Canister (RECOMMENDED)**
+### **React + Vite (RECOMMENDED)**
 ```
-Frontend: React + Vite + V0.dev → Azle Canister ("type": "azle")
-Static Assets: Asset Canister ("type": "assets") for SSL, images, CSS
+Frontend: React + Vite → Asset Canister
 Backend: Separate Motoko canister for core business logic
-Workflow: BDD → Claude → V0.dev → React Components → IC Deployment
-SSL: ✅ Automatic via asset canister
+External Integration: Separate Azle canister for provider APIs and webhooks
 ```
 
 **Advantages:**
-- ✅ **SSL Certificate Support**: Automatic provisioning via asset canister
-- ✅ **BDD-First Development**: Direct mapping from BDD scenarios to components
-- ✅ **Claude Integration**: AI generates Builder.io components from BDD scenarios
-- ✅ **Visual Development**: Immediate visual feedback for non-designers
-- ✅ **Code Generation**: Automatic React component creation from Builder.io
+- ✅ **Proven Pattern**: Asset Canister + Motoko Backend (DSCVR pattern)
 - ✅ **IC Community Dominance**: Most IC projects use React + Vite
-- ✅ **Hot Reload**: Vite's instant development feedback
+- ✅ **Performance**: Excellent performance with static serving
 - ✅ **Smaller Bundle**: No Next.js framework overhead
-- ✅ **Dynamic Content**: Server-side rendering for personalized experiences
+- ✅ **Faster Development**: Vite's instant hot reload
+- ✅ **PWA Support**: Excellent PWA capabilities with Vite
+- ✅ **BDD AI Workflow**: Excellent support for V0.dev + Claude integration
 
 **Disadvantages:**
-- ⚠️ **Learning Curve**: Team needs to learn Builder.io workflow
-- ⚠️ **Tool Dependency**: Requires Builder.io subscription and setup
-- ⚠️ **Azle Limitations**: File processing and library compatibility issues
+- ❌ **Static Content**: Limited server-side rendering (client-side routing)
+- ❌ **API Complexity**: Separate backend canisters for different functionality
+- ❌ **SEO**: Limited SEO support compared to server-side rendering
+- ❌ **Real-time Updates**: Manual implementation required for live updates
 
-### **Why Option B is Recommended**
+### **Why React + Vite is Recommended**
 
-**Option B (React + Vite + V0.dev + Azle Canister) is recommended** because it combines the SSL certificate benefits of asset canisters with the BDD-first development workflow that V0.dev enables, while leveraging Azle for dynamic content. This approach provides:
+**React + Vite is recommended** because it provides the best combination of IC compatibility and BDD AI workflow support. This approach provides:
 
-1. **BDD-First Development**: Start with behavior specifications you understand
-2. **AI-Powered Development**: V0.dev provides superior BDD scenario understanding
-3. **Claude Integration**: AI assistance for component generation and refinement
-4. **IC Community Alignment**: React + Vite is the dominant IC pattern
-5. **SSL Certificate Support**: Asset canisters provide automatic SSL for all domains
-6. **Dynamic Content**: Azle canister handles server-side rendering and personalized experiences
+1. **Proven Architecture**: Asset Canister + Motoko Backend pattern used by successful IC apps (DSCVR)
+2. **IC Community Alignment**: React + Vite is the dominant IC pattern
+3. **Performance**: Excellent performance with static serving
+4. **V0.dev Integration**: BDD-first development with AI-powered component generation
+5. **Simpler Development**: Faster iteration with Vite's hot reload
+6. **Smaller Bundle**: No Next.js framework overhead
 
 ### **V0.dev Integration Advantage**
 
@@ -113,7 +138,7 @@ SSL: ✅ Automatic via asset canister
 
 ### **Framework Selection Criteria**
 
-Given we must use Option B (Azle canister with React + Vite + V0.dev + asset canister for SSL), the framework choice is driven by:
+Given we must use React + Vite for BDD AI workflow, the framework choice is driven by:
 
 #### **Development Workflow**
 - **Claude Code Integration**: How well the framework works with AI-assisted development
@@ -134,31 +159,12 @@ Given we must use Option B (Azle canister with React + Vite + V0.dev + asset can
 - **Real-Time Updates**: Handle live updates from IC canisters
 
 **Note**: The canister architecture is defined in [frontend-architecture.md](./frontend-architecture.md) and includes:
-- **Frontend Asset Canister** (`"type": "assets"`): Serves the PWA with SSL certificate support
-- **Core User Management Canister** (`"type": "motoko"`): Handles KYC, wallet cache, risk assessment, audit trail, ZK proof generation
-- **External Integration Canister** (`"type": "azle"`): Manages provider APIs, webhooks, external service communication
-- **Notification System Canister** (`"type": "azle"`): Handles real-time notifications and event broadcasting
+- **Frontend Asset Canister** (`"type": "assets"`): Serves the PWA (SSL certificate support)
+- **Core User Management Canister** (`"type": "motoko"`): Handles KYC, wallet cache, risk assessment, audit trail, ZK proof generation, provider APIs, webhooks, and notifications
 
-## Workflow Comparison: Static vs Dynamic Frontend
 
-### **The Two Real Options**
 
-#### **Option A: Static Workflow (Next.js)**
-- **Frontend**: Next.js → Static Export → Asset Canister
-- **Backend**: Separate Motoko canister for all API/business logic
-- **External Integration**: Separate Azle canister (with known limitations)
-- **Workflow**: Build-time static generation, client-side routing
-- **SSL**: Automatic via asset canister
-
-#### **Option B: Dynamic Workflow (React + Azle)**
-- **Frontend**: React → Azle Canister (dynamic rendering)
-- **Static Assets**: Asset Canister (for SSL, images, CSS, etc.)
-- **Backend**: Separate Motoko canister for core business logic
-- **External Integration**: Same Azle canister handles both frontend and external APIs
-- **Workflow**: Server-side rendering, dynamic content generation
-- **SSL**: ✅ Automatic via asset canister (same as Option A)
-
-### **Option A: Static Workflow (Next.js + Asset Canister)**
+### **Next.js Static Workflow**
 
 #### **Architecture**
 ```json
@@ -172,10 +178,6 @@ Given we must use Option B (Azle canister with React + Vite + V0.dev + asset can
     "core-user-management": {
       "type": "motoko",
       "main": "src/core_user_management/main.mo"
-    },
-    "external-integration": {
-      "type": "azle",
-      "main": "src/external_integration/main.ts"
     }
   }
 }
@@ -214,7 +216,6 @@ module.exports = nextConfig
 - ❌ **Learning Curve**: Requires understanding Next.js conventions
 - ❌ **Static Export Limitations**: Some Next.js features not available in static export
 - ❌ **IC Community**: Less established patterns for IC integration
-- ❌ **Azle Integration**: May have compatibility issues with Azle limitations
 
 #### **SSL Certificate Support**
 ```bash
@@ -340,67 +341,7 @@ export default defineConfig({
 - ✅ **IC Integration**: Less proven IC agent integration
 - ✅ **Community**: Smaller than React community
 
-### **Option B: Dynamic Workflow (React + Azle Canister)**
 
-#### **Architecture**
-```json
-// dfx.json
-{
-  "canisters": {
-    "static-assets": {
-      "type": "assets",
-      "source": ["public/"]
-    },
-    "frontend": {
-      "type": "azle",
-      "main": "src/frontend/main.ts"
-    },
-    "core-user-management": {
-      "type": "motoko",
-      "main": "src/core_user_management/main.mo"
-    }
-  }
-}
-```
-
-#### **React + Vite Configuration**
-```javascript
-// vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ic: ['@dfinity/agent', '@dfinity/auth-client']
-        }
-      }
-    }
-  },
-  base: './'
-})
-```
-
-#### **Advantages**
-- ✅ **Dynamic Content**: Server-side rendering for personalized content
-- ✅ **Real-time Updates**: Live wallet updates, KYC status changes
-- ✅ **Simpler Architecture**: Single Azle canister handles frontend + external APIs
-- ✅ **IC Community Adoption**: More examples and patterns available
-- ✅ **Proven Azle Integration**: Well-established React + Azle patterns
-- ✅ **Smaller Bundle**: No Next.js framework overhead
-- ✅ **Faster Development**: Vite's instant hot reload
-
-#### **Disadvantages**
-- ❌ **Performance**: Slower than static serving (server-side rendering)
-- ❌ **Azle Limitations**: File processing and library compatibility issues
-- ❌ **SEO**: Limited SEO support compared to static generation
-- ❌ **Bundle Size**: Larger than static export due to server-side rendering
 
 ## Detailed Comparison Matrix
 
@@ -412,7 +353,7 @@ Based on analysis of IC projects and community patterns:
 
 #### **React + Vite Dominance**
 - **Most IC Projects**: Use React + Vite for frontend
-- **Examples**: DSCVR, OpenChat, many DeFi projects
+- **Examples**: DSCVR, many DeFi projects
 - **Community Support**: Extensive examples, tutorials, and patterns
 - **Azle Integration**: Well-established patterns for React + Azle integration
 
@@ -437,78 +378,141 @@ From [REACT_VITE_IC_RECOMMENDATIONS.md](../fti_newsletter_archive/docs/REACT_VIT
 - **Next.js**: May have more complex integration issues with Azle
 - **Recommendation**: Simpler frontend architecture works better with Azle constraints
 
-## Head-to-Head Comparison: Static vs Dynamic Workflow
+## Framework Comparison: All Options
 
-| Feature                     | Option A: Static (Next.js)  | Option B: Dynamic (React + Azle) |
-| --------------------------- | --------------------------- | -------------------------------- |
-| **SSL Certificate Support** | ✅ Automatic                 | ✅ Automatic (via asset canister) |
-| **Performance**             | ✅ Excellent                 | ❌ Slower (server-side rendering) |
-| **Bundle Size**             | ❌ Larger (Next.js overhead) | ✅ Smaller (React only)           |
-| **Dynamic Content**         | ❌ Limited (client-side)     | ✅ Excellent (server-side)        |
-| **Real-time Updates**       | ❌ Manual implementation     | ✅ Built-in server-side updates   |
-| **IC Community Adoption**   | ❌ Limited examples          | ✅ Dominant pattern               |
-| **Azle Compatibility**      | ✅ N/A (No Azle)             | ✅ Proven integration             |
-| **Build Complexity**        | ❌ Complex (Next.js)         | ✅ Simple (Vite)                  |
-| **Maintenance**             | ❌ Complex                   | ✅ Standard (React + Azle)        |
-| **SEO Support**             | ✅ Excellent                 | ❌ Limited                        |
-| **PWA Support**             | ✅ Excellent                 | ✅ Good                           |
-| **Learning Curve**          | ❌ Steep (Next.js)           | ✅ Gentle (React)                 |
+| Feature                   | Next.js                       | React + Vite                  | Vanilla JS + Vite             | Svelte + Vite                    | Vue.js + Vite                 |
+| ------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | -------------------------------- | ----------------------------- |
+| **Bundle Size**           | ❌ Larger (framework overhead) | ✅ Smaller (React only)        | ✅ Smallest (no framework)     | ✅ Very small (Svelte)            | ⚠️ Medium (Vue overhead)       |
+| **IC Community Adoption** | ❌ Limited examples            | ✅ Dominant pattern (DSCVR)    | ⚠️ Some examples               | ⚠️ Limited (OpenChat uses Svelte) | ❌ Very limited                |
+| **Build Complexity**      | ❌ Complex (Next.js)           | ✅ Simple (Vite)               | ✅ Simple (Vite)               | ✅ Simple (Vite)                  | ✅ Simple (Vite)               |
+| **Maintenance**           | ❌ Complex                     | ✅ Standard (React + Vite)     | ⚠️ Manual (no framework)       | ⚠️ Svelte-specific                | ⚠️ Vue-specific                |
+| **SEO Support**           | ✅ Excellent                   | ✅ Excellent (static sites)    | ✅ Excellent (static sites)    | ✅ Excellent (static sites)       | ✅ Excellent (static sites)    |
+| **PWA Support**           | ✅ Excellent                   | ✅ Excellent (Vite PWA plugin) | ✅ Excellent (Vite PWA plugin) | ✅ Excellent (Vite PWA plugin)    | ✅ Excellent (Vite PWA plugin) |
+| **Learning Curve**        | ❌ Steep (Next.js)             | ✅ Gentle (React)              | ✅ Familiar (vanilla JS)       | ✅ Gentle (Svelte)                | ✅ Gentle (Vue)                |
+| **BDD AI Workflow**       | ❌ Limited (V0.dev)            | ✅ Excellent (V0.dev)          | ❌ No V0.dev support           | ❌ No V0.dev support              | ❌ No V0.dev support           |
+| **Wix Conversion**        | ✅ Builder.io support          | ✅ Builder.io support          | ❌ No Builder.io support       | ❌ No Builder.io support          | ❌ No Builder.io support       |
 
 ## Implementation Recommendations
 
 ### **Phase 1: Technology Selection (Week 1)**
 
-**Recommended Choice: Option B - Dynamic Workflow (React + Azle)**
+**Recommended Choice: React + Vite + V0.dev**
 
 **Rationale:**
-1. **IC Community Dominance**: Most IC projects use React + Azle, extensive community support
-2. **Proven Integration**: Well-established patterns for React + Azle integration
-3. **Dynamic Content**: Excellent for real-time updates and personalized content
+1. **V0.dev Integration**: Excellent BDD AI workflow support
+2. **IC Community Dominance**: Most IC projects use React + Vite, extensive community support
+3. **Proven Pattern**: Asset Canister + Motoko Backend (DSCVR pattern)
 4. **Smaller Bundle**: No Next.js framework overhead
 5. **Faster Development**: Vite's instant hot reload
 6. **Team Experience**: Most developers familiar with React
-7. **Standard Pattern**: React + Azle is the standard IC frontend pattern
+7. **Static Generation**: V0.dev generates React components that build to static content
 
-**Alternative: Option A - Static Workflow (Next.js)**
-- **Use if**: Team values performance and SEO over community support
-- **Trade-offs**: Limited IC community examples, larger bundle, more complex build
-- **Risk**: Unknown IC integration patterns
+**Alternative: Next.js**
+- **Use if**: Team values SEO and built-in optimizations over V0.dev integration
+- **Trade-offs**: Limited V0.dev BDD AI workflow support, larger bundle, more complex build
+- **Risk**: Less established IC integration patterns
 
 
 
 ### **Phase 2: Architecture Setup (Weeks 2-3)**
 
 ```bash
-# Project structure (Next.js)
+# Project structure (React + Vite)
 cpp-frontend/
-├── app/                     # Next.js 13+ app directory
-│   ├── layout.tsx           # Root layout
-│   ├── page.tsx             # Home page
-│   ├── donate/              # Donation flow pages
-│   ├── portfolio/           # Portfolio dashboard pages
-│   ├── kyc/                 # KYC flow pages
-│   └── globals.css          # Global styles
-├── components/              # Reusable components
-│   ├── ui/                  # UI components
-│   ├── forms/               # Form components
-│   └── layout/              # Layout components
-├── lib/                     # Utility libraries
-│   ├── ic-client.ts         # IC integration
-│   ├── utils.ts             # Utility functions
-│   └── types.ts             # TypeScript types
-├── hooks/                   # Custom React hooks
+├── src/                     # Source code
+│   ├── main.tsx             # Entry point
+│   ├── App.tsx              # Root component
+│   ├── pages/               # Page components
+│   │   ├── Home.tsx         # Home page
+│   │   ├── Donate.tsx       # Donation flow
+│   │   ├── Portfolio.tsx    # Portfolio dashboard
+│   │   └── KYC.tsx          # KYC flow
+│   ├── components/          # Reusable components
+│   │   ├── ui/              # UI components (from V0.dev)
+│   │   ├── forms/           # Form components (from V0.dev)
+│   │   └── layout/          # Layout components (from V0.dev)
+│   ├── lib/                 # Utility libraries
+│   │   ├── ic-client.ts     # IC integration
+│   │   ├── utils.ts         # Utility functions
+│   │   └── types.ts         # TypeScript types
+│   ├── hooks/               # Custom React hooks
+│   └── styles/              # Global styles
 ├── public/
 │   ├── .well-known/
 │   │   └── ic-domains       # coolplanet-foundation.org
 │   ├── manifest.json        # PWA manifest
 │   └── icons/               # PWA icons
-├── out/                     # Static export (for IC asset canister)
-├── next.config.js           # Next.js configuration
+├── dist/                    # Static build (for IC asset canister)
+├── vite.config.ts           # Vite configuration
 ├── package.json
 └── tsconfig.json
 ```
 
-### **Phase 3: IC Integration (Weeks 4-5)**
+### **Phase 3: V0.dev + React + Vite Workflow (Weeks 4-5)**
+
+#### **V0.dev Component Generation**
+```typescript
+// 1. BDD Scenario Input to V0.dev
+// "As a user, I want to donate to the Cool Planet Foundation
+//  so that I can support environmental initiatives"
+
+// 2. V0.dev generates React component
+// Generated component from V0.dev
+export function DonationForm() {
+  const [amount, setAmount] = useState('')
+  const [email, setEmail] = useState('')
+  
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4">Donate to Cool Planet</h2>
+      <form className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">Amount</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md"
+          />
+        </div>
+        <button className="w-full bg-green-600 text-white py-2 rounded-md">
+          Donate Now
+        </button>
+      </form>
+    </div>
+  )
+}
+```
+
+#### **Vite Build Process**
+```bash
+# 1. V0.dev generates React components
+# 2. Copy components to src/components/
+# 3. Build static site with Vite
+npm run build
+
+# 4. Vite creates static files in dist/
+dist/
+├── index.html
+├── assets/
+│   ├── index-abc123.js
+│   └── index-def456.css
+└── manifest.json
+
+# 5. Deploy to IC asset canister
+dfx deploy frontend
+```
+
+### **Phase 4: IC Integration (Weeks 6-7)**
 
 ```typescript
 // src/services/ic-client.ts
@@ -626,7 +630,7 @@ curl -I "https://coolplanet-foundation.org/.well-known/ic-domains"
 
 ### **SSL Certificate Risks**
 - **Mitigation**: Use frontend asset canister architecture
-- **Fallback**: Dynamic workflow if needed (not recommended due to complexity)
+- **Fallback**: None needed - asset canister provides automatic SSL
 
 ### **Performance Risks**
 - **Mitigation**: Code splitting and lazy loading

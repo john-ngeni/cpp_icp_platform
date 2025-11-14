@@ -1,23 +1,31 @@
-# Frontend Architecture for CPP Platform (TypeScript/Azle Canisters)
+# Frontend Architecture: Crypto-Native Donation Flow
 
 ## Overview
 
-This document outlines the **frontend and integration canister architecture** implemented in **TypeScript/Azle** for the Cool Planet Platform (CPP). These canisters handle user interfaces, external integrations, and provide the bridge between users and the consolidated **Core User Management Canister** (Motoko).
+This document describes the **crypto-native donation flow** where users donate directly to CPF using cryptocurrency (not via Stripe). This alternative path requires **CPF to own the entire KYC process** rather than relying on Stripe's compliance infrastructure.
+
+**Key Distinction:**
+- **Current Implementation (cpf_members):** Fiat → Stripe → CPF (Stripe handles payment processing)
+- **This Document:** Crypto → CPF Direct (CPF handles KYC and compliance end-to-end)
+
+**Status:** This represents an alternative donation path for future implementation when crypto-native donors want to contribute directly without fiat currency conversion or Stripe intermediation.
+
+**Value:** Describes the architecture patterns for CPF-owned KYC, wallet integration, and crypto donation processing.
 
 ## Architecture Overview
 
 ### **Consolidated Canister Architecture**
 
-The CPP platform uses a **consolidated canister approach** where all user-related operations (KYC, wallet cache, risk assessment, audit trail, ZK proof generation) are handled by a single **Core User Management Canister** (Motoko), while frontend interactions and external integrations are managed by **TypeScript/Azle canisters**.
+The crypto-native donation flow uses a **consolidated canister approach** where all user-related operations (KYC, wallet cache, risk assessment, audit trail, ZK proof generation) are handled by backend canisters, while frontend interfaces provide the user experience.
 
 ### **Canister Separation Strategy**
 
-| Canister Type            | Language        | Responsibilities                                                                | Data Storage                                     |
-| ------------------------ | --------------- | ------------------------------------------------------------------------------- | ------------------------------------------------ |
-| **Core User Management** | Motoko          | KYC processing, wallet cache, risk assessment, audit trail, ZK proof generation | User data, KYC records, wallet cache, audit logs |
-| **Frontend Interface**   | TypeScript/Azle | User interfaces, form handling, UI state management                             | UI state, session data                           |
-| **External Integration** | TypeScript/Azle | Provider APIs, webhooks, external service communication                         | Integration state, webhook data                  |
-| **Notification System**  | TypeScript/Azle | Real-time notifications, event broadcasting                                     | Notification queues, user preferences            |
+| Canister Type            | Responsibilities                                                                | Data Storage                                     |
+| ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **Core User Management** | KYC processing, wallet cache, risk assessment, audit trail, ZK proof generation | User data, KYC records, wallet cache, audit logs |
+| **Frontend Interface**   | User interfaces, form handling, UI state management                             | UI state, session data                           |
+| **External Integration** | Provider APIs, webhooks, external service communication                         | Integration state, webhook data                  |
+| **Notification System**  | Real-time notifications, event broadcasting                                     | Notification queues, user preferences            |
 
 ## Basic Donation Flow
 
@@ -78,13 +86,13 @@ graph TD
     AA_SPONSOR --> KK_SPONSOR
     
     %% Color Coding
-    classDef azle fill:#ff6b35,stroke:#333,stroke-width:2px,color:#fff
-    classDef motoko fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#fff
+    classDef frontend fill:#ff6b35,stroke:#333,stroke-width:2px,color:#fff
+    classDef backend fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#fff
     classDef external fill:#ff4757,stroke:#333,stroke-width:2px,color:#fff
     classDef ii fill:#3742fa,stroke:#333,stroke-width:2px,color:#fff
-    
-    class A,SP,KYC1,K,DD,KK_SPONSOR,K_SPONSOR azle
-    class H,H_DECISION,H_DIRECT,H_ID_CHECK,H_AWARD_NEW,H_AWARD_BUNDLE,H_SPONSOR,H_SPONSOR_DECISION,H_SPONSOR_AWARD,AA,AA_SPONSOR motoko
+
+    class A,SP,KYC1,K,DD,KK_SPONSOR,K_SPONSOR frontend
+    class H,H_DECISION,H_DIRECT,H_ID_CHECK,H_AWARD_NEW,H_AWARD_BUNDLE,H_SPONSOR,H_SPONSOR_DECISION,H_SPONSOR_AWARD,AA,AA_SPONSOR backend
     class II_CHECK_DONATE,II_CHECK_SPONSOR,II_CHECK_STANDALONE,II_AUTH,II_CREATE,II_LOGIN,II_VERIFY ii
 ```
 
@@ -92,246 +100,71 @@ graph TD
 
 ### **Event-Driven Architecture**
 
-The frontend uses an **event-driven architecture** to handle real-time updates from the Core User Management Canister and Polygon blockchain events.
+The frontend uses an **event-driven architecture** to handle real-time updates from the backend canisters and Polygon blockchain events.
 
-```typescript
-// Event types for real-time updates
-type FrontendEvent = 
-  | { type: 'WALLET_CACHE_UPDATED'; data: WalletCacheUpdate }
-  | { type: 'KYC_STATUS_CHANGED'; data: KYCStatusUpdate }
-  | { type: 'NFT_AWARDED'; data: NFTAwardEvent }
-  | { type: 'SPONSORSHIP_COMPLETED'; data: SponsorshipEvent }
-  | { type: 'POLYGON_EVENT_PROCESSED'; data: PolygonEvent }
-  | { type: 'ERROR_OCCURRED'; data: ErrorEvent };
+**Event Types for Real-Time Updates:**
+- `WALLET_CACHE_UPDATED` - Crypto wallet balance or holdings changed
+- `KYC_STATUS_CHANGED` - KYC verification status updated
+- `NFT_AWARDED` - New NFT minted and awarded to user
+- `SPONSORSHIP_COMPLETED` - Sponsorship transaction completed
+- `POLYGON_EVENT_PROCESSED` - Blockchain event processed
+- `ERROR_OCCURRED` - Error during processing
 
-// Real-time update handling
-class RealTimeUpdateManager {
-  private eventSource: EventSource;
-  private listeners: Map<string, Function[]> = new Map();
-
-  constructor() {
-    this.eventSource = new EventSource('/api/events');
-    this.setupEventListeners();
-  }
-
-  private setupEventListeners() {
-    this.eventSource.onmessage = (event) => {
-      const frontendEvent: FrontendEvent = JSON.parse(event.data);
-      this.notifyListeners(frontendEvent);
-    };
-  }
-
-  public subscribe(eventType: string, callback: Function) {
-    if (!this.listeners.has(eventType)) {
-      this.listeners.set(eventType, []);
-    }
-    this.listeners.get(eventType)!.push(callback);
-  }
-
-  private notifyListeners(event: FrontendEvent) {
-    const callbacks = this.listeners.get(event.type) || [];
-    callbacks.forEach(callback => callback(event.data));
-  }
-}
-```
+**Pattern:** Subscribe to event streams from backend canisters, maintain local state, and update UI reactively.
 
 ### **Polygon Event Processing**
 
-The frontend receives real-time updates when Polygon events are processed by the Core User Management Canister:
+The frontend receives real-time updates when Polygon events are processed by the backend:
 
-```typescript
-// Polygon event processing integration
-class PolygonEventProcessor {
-  private updateManager: RealTimeUpdateManager;
-
-  constructor(updateManager: RealTimeUpdateManager) {
-    this.updateManager = updateManager;
-    this.setupPolygonEventHandlers();
-  }
-
-  private setupPolygonEventHandlers() {
-    this.updateManager.subscribe('POLYGON_EVENT_PROCESSED', (event: PolygonEvent) => {
-      switch (event.event_type) {
-        case 'award':
-          this.handleAwardEvent(event);
-          break;
-        case 'digital_asset_price_updated':
-          this.handlePriceUpdate(event);
-          break;
-        case 'donation_config_set':
-          this.handleConfigUpdate(event);
-          break;
-      }
-    });
-  }
-
-  private handleAwardEvent(event: PolygonEvent) {
-    // Update UI to reflect new NFT/bundle award
-    this.updateWalletDisplay(event.did);
-    this.showNotification(`New NFT awarded to ${event.did}`);
-  }
-
-  private handlePriceUpdate(event: PolygonEvent) {
-    // Update price displays across the application
-    this.updatePriceDisplays(event.newPrice);
-  }
-
-  private handleConfigUpdate(event: PolygonEvent) {
-    // Update donation configuration displays
-    this.updateDonationConfig(event);
-  }
-}
-```
+**Handled Event Types:**
+- `award` - NFT/bundle awarded to user (update wallet display, show notification)
+- `digital_asset_price_updated` - Crypto price changed (update price displays)
+- `donation_config_set` - Donation configuration updated (refresh settings)
 
 ### **Async Event Handling**
 
 The frontend handles asynchronous operations with proper loading states and error handling:
 
-```typescript
-// Async operation management
-class AsyncOperationManager {
-  private operations: Map<string, Promise<any>> = new Map();
-  private loadingStates: Map<string, boolean> = new Map();
-
-  public async executeOperation<T>(
-    operationId: string, 
-    operation: () => Promise<T>,
-    onProgress?: (progress: number) => void
-  ): Promise<T> {
-    this.setLoadingState(operationId, true);
-    
-    try {
-      const result = await operation();
-      this.setLoadingState(operationId, false);
-      return result;
-    } catch (error) {
-      this.setLoadingState(operationId, false);
-      this.handleError(operationId, error);
-      throw error;
-    }
-  }
-
-  private setLoadingState(operationId: string, loading: boolean) {
-    this.loadingStates.set(operationId, loading);
-    this.notifyLoadingStateChange(operationId, loading);
-  }
-
-  private handleError(operationId: string, error: any) {
-    // Log error and notify user
-    console.error(`Operation ${operationId} failed:`, error);
-    this.showErrorNotification(operationId, error);
-  }
-
-  public isOperationLoading(operationId: string): boolean {
-    return this.loadingStates.get(operationId) || false;
-  }
-}
-```
+**Pattern:**
+1. Set loading state when operation starts
+2. Execute async operation (canister call)
+3. Clear loading state on completion
+4. Handle errors gracefully with user notifications
+5. Track operation status for UI feedback
 
 ## Inter-Canister Communication Patterns
 
 ### **Synchronous Calls**
 
-For immediate responses, the frontend makes synchronous calls to the Core User Management Canister:
+For immediate responses, the frontend makes synchronous calls to backend canisters:
 
-```typescript
-// Synchronous communication patterns
-class CoreUserManagementClient {
-  private canister: CoreUserManagementCanister;
+**Immediate Operations:**
+- `assessRisk(donationAmount, jurisdiction)` - Check if KYC required for crypto donation
+- `checkExistingCoolPlanetID(userDID)` - Verify if user already has CPF ID
+- `getWalletCache(userDID)` - Retrieve user's crypto wallet holdings and NFT portfolio
 
-  constructor(canister: CoreUserManagementCanister) {
-    this.canister = canister;
-  }
-
-  // Immediate risk assessment
-  public async assessRisk(donationAmount: number, jurisdiction: string): Promise<RiskAssessment> {
-    return await this.canister.assessRisk({
-      amount: donationAmount,
-      jurisdiction: jurisdiction,
-      timestamp: Date.now()
-    });
-  }
-
-  // Check existing Cool Planet ID
-  public async checkExistingCoolPlanetID(userDID: string): Promise<CoolPlanetIDStatus> {
-    return await this.canister.checkExistingCoolPlanetID(userDID);
-  }
-
-  // Get wallet cache
-  public async getWalletCache(userDID: string): Promise<WalletCache> {
-    return await this.canister.getWalletCache(userDID);
-  }
-}
-```
+**Pattern:** Request → Response (2-5 seconds typical)
 
 ### **Asynchronous Event Processing**
 
 For long-running operations, the frontend subscribes to events:
 
-```typescript
-// Asynchronous event processing
-class AsyncEventProcessor {
-  private eventManager: RealTimeUpdateManager;
-  private operationManager: AsyncOperationManager;
+**Long-Running Operations:**
+- KYC verification via external provider (2-10 minutes)
+- Polygon blockchain transaction confirmation (30 seconds - 5 minutes)
+- NFT minting and metadata upload to IPFS (1-3 minutes)
+- Cross-chain bridge operations (varies by chain)
 
-  constructor(eventManager: RealTimeUpdateManager, operationManager: AsyncOperationManager) {
-    this.eventManager = eventManager;
-    this.operationManager = operationManager;
-    this.setupEventHandlers();
-  }
+**Event Subscription Pattern:**
+1. Subscribe to specific event types
+2. Handle status updates in real-time
+3. Update UI progressively as operation proceeds
+4. Notify user on completion or errors
 
-  private setupEventHandlers() {
-    // Handle KYC status changes
-    this.eventManager.subscribe('KYC_STATUS_CHANGED', (update: KYCStatusUpdate) => {
-      this.updateKYCStatusDisplay(update);
-      this.checkKYCCompletion(update);
-    });
-
-    // Handle wallet cache updates
-    this.eventManager.subscribe('WALLET_CACHE_UPDATED', (update: WalletCacheUpdate) => {
-      this.updateWalletDisplay(update);
-      this.checkSponsorshipLimits(update);
-    });
-
-    // Handle NFT awards
-    this.eventManager.subscribe('NFT_AWARDED', (event: NFTAwardEvent) => {
-      this.showAwardNotification(event);
-      this.updatePortfolioDisplay(event);
-    });
-  }
-
-  private updateKYCStatusDisplay(update: KYCStatusUpdate) {
-    // Update UI to reflect current KYC status
-    const statusElement = document.getElementById('kyc-status');
-    if (statusElement) {
-      statusElement.textContent = update.status;
-      statusElement.className = `kyc-status-${update.status.toLowerCase()}`;
-    }
-  }
-
-  private checkKYCCompletion(update: KYCStatusUpdate) {
-    if (update.status === 'COMPLETED') {
-      this.showSuccessNotification('KYC verification completed successfully!');
-      this.enableDonationFlow();
-    }
-  }
-
-  private updateWalletDisplay(update: WalletCacheUpdate) {
-    // Update wallet dashboard with latest holdings and sponsorships
-    this.updateHoldingsDisplay(update.holdings);
-    this.updateSponsorshipDisplay(update.sponsored);
-    this.updateSponsorshipLimits(update.sponsorship_limit, update.sponsorship_used);
-  }
-
-  private checkSponsorshipLimits(update: WalletCacheUpdate) {
-    const remaining = update.sponsorship_limit - update.sponsorship_used;
-    if (remaining <= 0) {
-      this.disableSponsorshipFeatures();
-      this.showWarningNotification('You have reached your sponsorship limit');
-    }
-  }
-}
-```
+**Example Event Handlers:**
+- `KYC_STATUS_CHANGED` → Update status display, enable donation flow when completed
+- `WALLET_CACHE_UPDATED` → Update holdings display, check sponsorship limits
+- `NFT_AWARDED` → Show award notification, update portfolio display
 
 ## Implementation Timeline
 
