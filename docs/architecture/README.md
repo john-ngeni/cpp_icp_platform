@@ -9,7 +9,18 @@
 
 ## 🚀 Quick Start: Where to Begin
 
-**NEW READERS START HERE:**
+### **For Board Members (Who Hold Legal Responsibility)**
+
+**Start here:** **[board-introduction.md](./board-introduction.md)** - Plain-language introduction
+- What we're building and why
+- Your role in governance vs. what technical team handles
+- How board voting works with time-based thresholds
+- Decision points coming up (Wix → ICP migration milestones)
+- Legal and compliance implications of key decisions
+- How senior authors (technical/legal advisors) support your decision-making
+- No technical background required (10-15 min read)
+
+### **For Technical Readers**
 
 1. **[canister-architecture-diagram.md](./canister-architecture-diagram.md)** - **CRITICAL FOUNDATION**
    - Control plane vs data plane architecture
@@ -37,13 +48,22 @@
 
 These documents describe the **infrastructure layer** required before any user-facing features:
 
+**For Board Members:**
+- **[board-introduction.md](./board-introduction.md)** - **START HERE** - Plain-language overview for board members who hold legal responsibility
+
+**Core Architecture:**
 - **[canister-architecture-diagram.md](./canister-architecture-diagram.md)** - Complete system architecture
 - **[architectural_decisions.md](./architectural_decisions.md)** - Decision log with rationale
+- **[user-journey-funnel.md](./user-journey-funnel.md)** - User engagement progression
+
+**Governance:**
 - **[governance-policy.md](./governance-policy.md)** - Board governance and approval tiers
 - **[admin-architecture.md](./admin-architecture.md)** - Control plane security patterns
-- **[ens-dns-setup.md](./ens-dns-setup.md)** - ENS/DNS bootstrap sequence
 - **[crypto_funding.md](./crypto_funding.md)** - Thermostat algorithm for crypto treasury
 - **[multi-sig-governance-comparison.md](./multi-sig-governance-comparison.md)** - Governance options
+
+**Infrastructure Setup:**
+- **[ens-dns-setup.md](./ens-dns-setup.md)** - ENS/DNS bootstrap sequence
 - **[derivation-origins-integration.md](./derivation-origins-integration.md)** - Identity architecture
 - **[origins.md](./origins.md)** - Detailed derivation origin analysis
 
@@ -72,7 +92,7 @@ These documents describe **advanced features** that will be implemented AFTER fo
 The Cool Planet Platform (CPP) is a comprehensive system combining **NFT crowdfunding**, **community management**, and **educational content** on the Internet Computer (IC) with Polygon blockchain integration.
 
 **Architecture Model:** Two-plane separation
-- **Control Plane** (authors.cpf.nft): Infrastructure, governance, upgrades - THIS REPO
+- **Control Plane** (governance.cpf.nft): Infrastructure, governance, upgrades - THIS REPO
 - **Data Plane** (cpf.nft): User-facing operations, content, donations - OTHER REPOS
 
 See [canister-architecture-diagram.md](./canister-architecture-diagram.md) for complete architecture overview.
@@ -293,10 +313,14 @@ The sections below describe **advanced community and social features** planned f
 
 ### **For Board Members & Governance**
 
-1. **[governance-policy.md](./governance-policy.md)** - Board voting structure and approval tiers
-2. **[architectural_decisions.md](./architectural_decisions.md)** - Key decisions requiring board input
-3. **[crypto_funding.md](./crypto_funding.md)** - Crypto treasury management strategy
-4. **[canister-architecture-diagram.md § Production Migration](./canister-architecture-diagram.md)** - Production cutover decision points
+**Start with the plain-language intro:**
+1. **[board-introduction.md](./board-introduction.md)** - **START HERE** - Non-technical overview of platform and your governance role (you hold legal responsibility)
+
+**Then explore governance details as needed:**
+2. **[governance-policy.md](./governance-policy.md)** - Board voting structure and approval tiers
+3. **[architectural_decisions.md](./architectural_decisions.md)** - Key decisions requiring board input
+4. **[crypto_funding.md](./crypto_funding.md)** - Crypto treasury management strategy
+5. **[canister-architecture-diagram.md § Production Migration](./canister-architecture-diagram.md)** - Production cutover decision points
 
 ## Contributing
 

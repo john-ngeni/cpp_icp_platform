@@ -68,28 +68,28 @@ CPP platform governance has **two distinct levels**:
 
 > **For complete ENS/DNS setup and bootstrap procedures, see [ens-dns-setup.md](./ens-dns-setup.md)**
 
-### Board Member Authentication: authors.cpf.nft
+### Board Member Authentication: governance.cpf.nft
 
 **Board members authenticate using a SEPARATE derivation origin from users:**
 
 | Identity Type | Derivation Origin | Purpose | Principals |
 |---------------|------------------|---------|------------|
-| **Board Member (Governance)** | authors.cpf.nft | Vote on governance proposals, control ENS | authors.cpf.nft-derived II principals |
+| **Board Member (Governance)** | governance.cpf.nft | Vote on governance proposals, control ENS | governance.cpf.nft-derived II principals |
 | **Technical Signer** | cpf.nft | Canister upgrades, operations | cpf.nft-derived II principals |
 | **Regular User** | cpf.nft | Use services (newsletters, member portal) | cpf.nft-derived II principals |
 
-**Key Insight:** Board members get **different Internet Identity principals** when they authenticate with authors.cpf.nft (for governance) vs cpf.nft (as a user).
+**Key Insight:** Board members get **different Internet Identity principals** when they authenticate with governance.cpf.nft (for governance) vs cpf.nft (as a user).
 
-**Why Separate authors.cpf.nft Origin?**
+**Why Separate governance.cpf.nft Origin?**
 
 1. **Bootstrap Facilitation:**
-   - Board identities established FIRST using authors.cpf.nft
+   - Board identities established FIRST using governance.cpf.nft
    - These identities deploy and control user-facing cpf.nft infrastructure
    - Clean separation of governance from users
 
 2. **Phishing Protection:**
-   - Board members only access authors.cpf.nft for governance operations
-   - Users never see or access authors.cpf.nft
+   - Board members only access governance.cpf.nft for governance operations
+   - Users never see or access governance.cpf.nft
    - Separate domain makes phishing attacks more obvious
 
 3. **Audit Clarity:**
@@ -110,7 +110,7 @@ CPP platform governance has **two distinct levels**:
 
 The cpf.nft ENS domain is not just a domain name - it's an **NFT** on Ethereum mainnet. Ownership of this NFT determines who can:
 - Update DNS records for cpf.nft
-- Create/modify subdomains (like authors.cpf.nft)
+- Create/modify subdomains (like governance.cpf.nft)
 - Transfer ownership to another wallet/address
 
 **Ownership Evolution:**
@@ -122,7 +122,7 @@ Phase 0: Bootstrap (Personal Wallet)
     ↓
 Phase 1: Governance Control (ICP Chain-Key)
     ↓ ENS NFT transferred to ICP-derived Ethereum address
-    ↓ Board members (authors.cpf.nft) control via IC governance
+    ↓ Board members (governance.cpf.nft) control via IC governance
     ↓
 Phase 2: Full Decentralization (SNS)
     ↓ ENS controlled by SNS governance
@@ -132,7 +132,7 @@ Phase 2: Full Decentralization (SNS)
 **Current Control Mechanism (Phase 1):**
 
 ```
-Board Members (authors.cpf.nft identities)
+Board Members (governance.cpf.nft identities)
     ↓ submit/approve governance proposals
 Governance Canister (Rust + Motoko voting)
     ↓ derives Ethereum address via chain-key ECDSA
@@ -144,7 +144,7 @@ cpf.nft ENS NFT
 
 **How Board Members Control ENS:**
 
-1. **Board member authenticates** with authors.cpf.nft derivation origin
+1. **Board member authenticates** with governance.cpf.nft derivation origin
 2. **Submits governance proposal:** "Update cpf.nft DNS to point to new canister"
 3. **Other board members approve:** 3-of-3 required (Tier 0 action)
 4. **Governance canister executes:**
@@ -157,7 +157,7 @@ cpf.nft ENS NFT
 **ENS Actions Requiring Board Approval (Tier 0):**
 - Update cpf.nft DNS records (point to different canister)
 - Create new subdomains (e.g., community.cpf.nft)
-- Modify existing subdomains (e.g., authors.cpf.nft)
+- Modify existing subdomains (e.g., governance.cpf.nft)
 - Transfer cpf.nft ENS NFT ownership
 - Update ENS text records (metadata, contact info, etc.)
 
@@ -179,10 +179,10 @@ CPP platform uses three distinct identity levels:
 - **Principal Type:** dfx identity (NOT Internet Identity)
 - **Authority:** Infrastructure-level (canister lifecycle)
 
-**Level 2: Board Governance (authors.cpf.nft identities)**
+**Level 2: Board Governance (governance.cpf.nft identities)**
 - **Who:** 3 board members
 - **Purpose:** Strategic governance (ENS, major decisions, financial)
-- **Principal Type:** Internet Identity (authors.cpf.nft derivation)
+- **Principal Type:** Internet Identity (governance.cpf.nft derivation)
 - **Authority:**
   - Control cpf.nft ENS NFT
   - Approve Tier 0 actions (3-of-3 required)
@@ -202,11 +202,11 @@ CPP platform uses three distinct identity levels:
 **Example: Board Member Has Both Identities**
 
 A board member might have:
-- **Board identity (authors.cpf.nft):** Principal `aaaaa-aaaaa-aaaaa` (for governance)
+- **Board identity (governance.cpf.nft):** Principal `aaaaa-aaaaa-aaaaa` (for governance)
 - **User identity (cpf.nft):** Principal `bbbbb-bbbbb-bbbbb` (for using services)
 
 These are **completely separate identities**:
-- When voting on governance: Uses authors.cpf.nft → Principal aaaaa...
+- When voting on governance: Uses governance.cpf.nft → Principal aaaaa...
 - When using newsletter service: Uses cpf.nft → Principal bbbbb...
 - No connection between the two (different derivation origins)
 
@@ -217,7 +217,7 @@ These are **completely separate identities**:
 **Phase 0: ENS Acquisition (Before canister deployment)**
 ```bash
 # Personal Ethereum wallet acquires cpf.nft ENS NFT
-# Create authors.cpf.nft subdomain immediately
+# Create governance.cpf.nft subdomain immediately
 # See ens-dns-setup.md § Phase 0
 ```
 
@@ -229,14 +229,14 @@ dfx deploy voting_canister --network ic
 # ... other canisters
 ```
 
-**Phase 2: Bootstrap Board Identities (authors.cpf.nft)**
+**Phase 2: Bootstrap Board Identities (governance.cpf.nft)**
 ```bash
-# Configure authors.cpf.nft DNS → governance_canister
-# Board members visit https://authors.cpf.nft
+# Configure governance.cpf.nft DNS → governance_canister
+# Board members visit https://governance.cpf.nft
 # Authenticate with Internet Identity
 # Board member principals initialized in voting canister
 
-BOARD_MEMBER_1="xxxxx-xxxxx-xxxxx"  # From authors.cpf.nft auth
+BOARD_MEMBER_1="xxxxx-xxxxx-xxxxx"  # From governance.cpf.nft auth
 BOARD_MEMBER_2="yyyyy-yyyyy-yyyyy"
 BOARD_MEMBER_3="zzzzz-zzzzz-zzzzz"
 
@@ -265,7 +265,7 @@ dfx canister call voting_canister initializeBoardMembers \
 ```
 
 **Result:**
-- ✅ Board members (authors.cpf.nft) control ENS + IC governance
+- ✅ Board members (governance.cpf.nft) control ENS + IC governance
 - ✅ Technical signers (cpf.nft) control day-to-day operations
 - ✅ Users (cpf.nft) access services
 - ✅ Clear separation at every level

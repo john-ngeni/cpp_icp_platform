@@ -25,11 +25,11 @@ CPP platform uses **cpf.nft (Unstoppable Domains)** as the canonical derivation 
 **This document covers domain-specific aspects:**
 
 1. **Domain Acquisition:** cpf.nft already reserved with Unstoppable Domains
-2. **Subdomain Creation:** Create authors.cpf.nft for control plane (governance, infrastructure)
+2. **Subdomain Creation:** Create governance.cpf.nft for control plane (governance, infrastructure)
 3. **Ownership Evolution:** Personal wallet → ICP governance control → SNS
 4. **Chain-Key Control:** How ICP governance controls domain NFT via threshold ECDSA (Polygon)
 5. **Bootstrap Sequence:** Order of operations for clean identity hierarchy
-6. **Control Plane Focus:** This repo manages control plane infrastructure (authors.cpf.nft)
+6. **Control Plane Focus:** This repo manages control plane infrastructure (governance.cpf.nft)
 
 **Gas Cost Reality:**
 - **Admin operations (this document):** < $10/year - Minimal, one-time subdomain setup
@@ -45,11 +45,11 @@ CPP platform uses **cpf.nft (Unstoppable Domains)** as the canonical derivation 
   - Troubleshooting DNS issues
 
 **Important:** ENS and traditional DNS domains **coexist** in CPP platform:
-- **ENS authors.cpf.nft (Control Plane):** Derivation origin for governance, infrastructure management
+- **ENS governance.cpf.nft (Control Plane):** Derivation origin for governance, infrastructure management
 - **ENS cpf.nft (Data Plane):** Derivation origin for user-facing operations
 - **Traditional DNS (coolplanet-foundation.org, newsletters.*):** User-facing domains, alternative origins
 - Both use the same IC DNS configuration (see [ic_dns.md](./ic_dns.md))
-- **Authors have TWO principals:** One for control plane (authors.cpf.nft), one for data plane (cpf.nft)
+- **Authors have TWO principals:** One for control plane (governance.cpf.nft), one for data plane (cpf.nft)
 
 ---
 
@@ -104,7 +104,7 @@ Phase 2: Full Decentralization (SNS/DAO control)
 
 ---
 
-### Step 2: Create authors.cpf.nft Subdomain
+### Step 2: Create governance.cpf.nft Subdomain
 
 **Immediately after acquiring cpf.nft:**
 
@@ -114,17 +114,17 @@ Phase 2: Full Decentralization (SNS/DAO control)
 
 # Navigate to "Subdomains" tab
 # Create new subdomain: "admin"
-#   Full name: authors.cpf.nft
+#   Full name: governance.cpf.nft
 #   Owner: [Same wallet initially, transfer later]
 
 # Save changes (Ethereum transaction required)
 ```
 
-**Purpose of authors.cpf.nft (Control Plane):**
+**Purpose of governance.cpf.nft (Control Plane):**
 - **Control plane derivation origin** for board members and operations staff
 - Governance, infrastructure management, strategic decisions
 - Separate Internet Identity principals from data plane (cpf.nft) identities
-- Phishing protection (authors only access authors.cpf.nft for control plane operations)
+- Phishing protection (authors only access governance.cpf.nft for control plane operations)
 - Clean bootstrap of governance hierarchy
 - **This repo (cpp_icp_platform) focuses on control plane infrastructure**
 
@@ -153,10 +153,10 @@ Phase 2: Full Decentralization (SNS/DAO control)
 # Value: [cpf_nft_canister_id]
 ```
 
-**For authors.cpf.nft (governance):**
+**For governance.cpf.nft (governance):**
 
 ```bash
-# In ENS Manager for authors.cpf.nft:
+# In ENS Manager for governance.cpf.nft:
 
 # Add Content Hash
 # Content: IC canister ID of governance_canister
@@ -178,7 +178,7 @@ Phase 2: Full Decentralization (SNS/DAO control)
 - ✅ Board members control ENS via IC governance (same mechanism as canisters)
 - ✅ No need for external Ethereum multi-sig (Gnosis Safe)
 - ✅ Fully on-chain governance
-- ✅ Board uses authors.cpf.nft for ALL control plane actions (ENS + IC + governance)
+- ✅ Board uses governance.cpf.nft for ALL control plane actions (ENS + IC + governance)
 
 **Challenge:**
 - Requires chain-key ECDSA integration
@@ -188,9 +188,9 @@ Phase 2: Full Decentralization (SNS/DAO control)
 ### Architecture: ICP Chain-Key Control of ENS
 
 ```
-CONTROL PLANE (authors.cpf.nft)
+CONTROL PLANE (governance.cpf.nft)
     ↓
-Board Members (authors.cpf.nft identities)
+Board Members (governance.cpf.nft identities)
     ↓ submit proposal
 Governance Canister (Rust + Motoko voting)
     ↓ votes reach threshold (time-based: 3-of-3 immediate, 2-of-3 after 3 days, 1-of-3 after 7 days)
@@ -384,7 +384,7 @@ dfx canister call governance_canister getEthereumAddress --network ic
 pub enum ProposalType {
     // ... existing types
     UpdateENSRecord {
-        domain: String,           // "cpf.nft" or "authors.cpf.nft"
+        domain: String,           // "cpf.nft" or "governance.cpf.nft"
         record_type: ENSRecordType,
         value: String,
     },
@@ -420,7 +420,7 @@ async fn execute_ens_update(proposal: UpdateENSRecord) -> Result<(), String> {
 **Board Member Workflow:**
 
 ```bash
-# Board member authenticates with authors.cpf.nft
+# Board member authenticates with governance.cpf.nft
 # Visits governance dashboard
 
 # Submit proposal: Update cpf.nft DNS to point to new canister
@@ -538,17 +538,17 @@ This section covers ENS-specific DNS configuration via ENS Manager.
 
 ---
 
-### Configure authors.cpf.nft → governance_canister
+### Configure governance.cpf.nft → governance_canister
 
 **DNS Records (via ENS Manager):**
 
 ```bash
-# Visit: https://app.ens.domains/authors.cpf.nft
+# Visit: https://app.ens.domains/governance.cpf.nft
 # (Subdomain management under cpf.nft)
 
 # CNAME record
 # Name: @
-# Value: authors.cpf.nft.icp1.io
+# Value: governance.cpf.nft.icp1.io
 
 # TXT record
 # Name: _canister-id
@@ -556,7 +556,7 @@ This section covers ENS-specific DNS configuration via ENS Manager.
 
 # ACME CNAME
 # Name: _acme-challenge
-# Value: _acme-challenge.authors.cpf.nft.icp2.io
+# Value: _acme-challenge.governance.cpf.nft.icp2.io
 
 # Save changes (Ethereum transaction)
 ```
@@ -573,7 +573,7 @@ This section covers ENS-specific DNS configuration via ENS Manager.
 
 ```
 CONTROL PLANE (ENS):
-└─ authors.cpf.nft                    # Control plane derivation origin (governance, infrastructure)
+└─ governance.cpf.nft                    # Control plane derivation origin (governance, infrastructure)
 
 DATA PLANE (ENS):
 └─ cpf.nft                            # Data plane derivation origin (user operations)
@@ -586,7 +586,7 @@ DATA PLANE (Alternative Origins - Traditional DNS):
 ```
 
 **Key Points:**
-- **authors.cpf.nft (Control Plane):** Governance, infrastructure, strategic decisions - THIS REPO
+- **governance.cpf.nft (Control Plane):** Governance, infrastructure, strategic decisions - THIS REPO
 - **cpf.nft (Data Plane):** User-facing operations, content, donations, NFTs
 - **Traditional DNS domains:** Data plane alternative origins (familiar .org domains)
 - **All domains** use the same IC DNS configuration (see [ic_dns.md](./ic_dns.md))
@@ -678,7 +678,7 @@ curl https://cpf.nft/.well-known/ii-alternative-origins
 # - Owner: Personal Ethereum wallet (founder/technical lead)
 # - Cost: Varies (check ENS marketplace)
 
-# Step 2: Create authors.cpf.nft subdomain
+# Step 2: Create governance.cpf.nft subdomain
 # - In ENS Manager for cpf.nft
 # - Navigate to Subdomains → Create "admin"
 # - Owner: Same personal wallet initially
@@ -690,7 +690,7 @@ curl https://cpf.nft/.well-known/ii-alternative-origins
 
 **State after Phase 0:**
 - ✅ cpf.nft owned by personal wallet
-- ✅ authors.cpf.nft subdomain created
+- ✅ governance.cpf.nft subdomain created
 - ❌ No IC canisters deployed yet
 - ❌ No derivation origins configured yet
 
@@ -734,21 +734,21 @@ echo "CPF NFT Canister: $CPF_NFT_ID"
 ### Phase 2: Bootstrap Governance Identities (Week 1)
 
 ```bash
-# Step 7: Configure authors.cpf.nft DNS → governance_canister
-# In ENS Manager for authors.cpf.nft:
+# Step 7: Configure governance.cpf.nft DNS → governance_canister
+# In ENS Manager for governance.cpf.nft:
 # - CNAME: @ → admin.cpf.icp1.io
 # - TXT: _canister-id → $GOVERNANCE_ID
 
-# Step 8: Register authors.cpf.nft with IC
+# Step 8: Register governance.cpf.nft with IC
 curl -X POST https://icp0.io/registrations \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "authors.cpf.nft",
+    "name": "governance.cpf.nft",
     "canister_id": "'$GOVERNANCE_ID'"
   }'
 
-# Step 9: Board members authenticate with authors.cpf.nft
-# - Board members visit https://authors.cpf.nft
+# Step 9: Board members authenticate with governance.cpf.nft
+# - Board members visit https://governance.cpf.nft
 # - Authenticate with Internet Identity
 # - Copy their principals
 
@@ -767,8 +767,8 @@ dfx canister call voting_canister initializeBoardMembers \
 ```
 
 **State after Phase 2:**
-- ✅ authors.cpf.nft accessible and points to governance canister
-- ✅ Board members have Internet Identity principals (from authors.cpf.nft)
+- ✅ governance.cpf.nft accessible and points to governance canister
+- ✅ Board members have Internet Identity principals (from governance.cpf.nft)
 - ✅ Board members initialized in voting canister
 - ❌ cpf.nft (user-facing) not configured yet
 
@@ -854,7 +854,7 @@ curl https://cpf.nft
 
 **State after Phase 4:**
 - ✅ cpf.nft accessible and serves content
-- ✅ authors.cpf.nft accessible for governance
+- ✅ governance.cpf.nft accessible for governance
 - ✅ Alternative origins configured
 - ✅ Board controls ENS via governance
 - 🎉 **BOOTSTRAP COMPLETE**
@@ -917,7 +917,7 @@ curl -X POST https://icp0.io/registrations \
 ```bash
 # Check DNS records
 dig cpf.nft
-dig authors.cpf.nft
+dig governance.cpf.nft
 
 # Should show CNAME pointing to IC boundary nodes
 
@@ -936,8 +936,8 @@ curl https://cpf.nft/.well-known/ii-alternative-origins
 ### Verify Admin Authentication
 
 ```bash
-# Test authors.cpf.nft authentication
-# 1. Visit https://authors.cpf.nft
+# Test governance.cpf.nft authentication
+# 1. Visit https://governance.cpf.nft
 # 2. Authenticate with Internet Identity
 # 3. Copy your principal
 
@@ -1075,13 +1075,13 @@ curl -I https://cpf.nft/.well-known/ii-alternative-origins
 **Symptom:** Board member gets "Unauthorized" when calling governance functions
 
 **Possible Causes:**
-1. Used wrong derivation origin (cpf.nft instead of authors.cpf.nft)
+1. Used wrong derivation origin (cpf.nft instead of governance.cpf.nft)
 2. Principal not in board members list
 3. Wrong canister ID
 
 **Fix:**
 ```bash
-# Verify board member is using authors.cpf.nft
+# Verify board member is using governance.cpf.nft
 # Check browser console for derivation origin in auth call
 
 # Verify principal is in board list
@@ -1099,15 +1099,15 @@ dfx canister call voting_canister addBoardMember \
 
 ### ENS Setup
 - [ ] cpf.nft ENS NFT acquired
-- [ ] authors.cpf.nft subdomain created
+- [ ] governance.cpf.nft subdomain created
 - [ ] ENS NFT transferred to governance (ICP or Gnosis Safe)
 - [ ] Board members can update ENS records
 
 ### DNS Configuration
 - [ ] cpf.nft CNAME → cpf.icp1.io
 - [ ] cpf.nft TXT _canister-id → cpf_nft_canister
-- [ ] authors.cpf.nft CNAME → admin.cpf.icp1.io
-- [ ] authors.cpf.nft TXT _canister-id → governance_canister
+- [ ] governance.cpf.nft CNAME → admin.cpf.icp1.io
+- [ ] governance.cpf.nft TXT _canister-id → governance_canister
 - [ ] Both domains registered with IC boundary nodes
 - [ ] DNS propagation complete (24-48 hours)
 
@@ -1118,14 +1118,14 @@ dfx canister call voting_canister addBoardMember \
 - [ ] All canisters deployed and accessible
 
 ### Identity Bootstrap
-- [ ] Board members authenticated with authors.cpf.nft
+- [ ] Board members authenticated with governance.cpf.nft
 - [ ] Board member principals initialized in voting canister
 - [ ] Users can authenticate with cpf.nft
 - [ ] Cross-origin authentication works (same principal across subdomains)
 
 ### Verification
 - [ ] https://cpf.nft accessible
-- [ ] https://authors.cpf.nft accessible
+- [ ] https://governance.cpf.nft accessible
 - [ ] Alternative origins return same principal
 - [ ] Board members can submit/approve governance proposals
 - [ ] ENS updates work via governance

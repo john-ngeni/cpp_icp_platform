@@ -946,18 +946,18 @@ dfx canister call sns_governance submit_proposal '(
 
 **Cross-cutting concern:** Regardless of which multi-sig governance approach you choose, the CPP platform needs to control the `cpf.nft` ENS NFT on Ethereum. The ENS NFT is an **ERC-721 token** that controls:
 - DNS records for cpf.nft and subdomains
-- Subdomain creation (e.g., authors.cpf.nft)
+- Subdomain creation (e.g., governance.cpf.nft)
 - ENS text records
 - Ownership transfer
 
 ### **The Challenge**
 
-ENS is on **Ethereum**, but IC governance is on the **Internet Computer**. How do board members using IC-based identities (authors.cpf.nft Internet Identity principals) control an Ethereum NFT?
+ENS is on **Ethereum**, but IC governance is on the **Internet Computer**. How do board members using IC-based identities (governance.cpf.nft Internet Identity principals) control an Ethereum NFT?
 
 ### **Solution: ICP Chain-Key Control of ENS NFT**
 
 ```
-Board Members (authors.cpf.nft identities)
+Board Members (governance.cpf.nft identities)
     ↓ submit/approve governance proposals (IC)
 Governance Canister (IC)
     ↓ uses threshold ECDSA to derive Ethereum address
@@ -997,14 +997,14 @@ async fn derive_ethereum_address() -> String {
 **Step 2: Board Submits ENS Update Proposal**
 
 ```rust
-// Board member (via authors.cpf.nft) submits proposal
+// Board member (via governance.cpf.nft) submits proposal
 public async fn propose_ens_update(
     caller: Principal,  // Board member principal
-    domain: String,     // e.g., "authors.cpf.nft"
+    domain: String,     // e.g., "governance.cpf.nft"
     record_type: String,  // "A", "CNAME", "TXT", etc.
     value: String       // e.g., "ic0.app"
 ) -> Result<ProposalId, String> {
-    // Verify caller is board member (authors.cpf.nft identity)
+    // Verify caller is board member (governance.cpf.nft identity)
     if !is_board_member(caller) {
         return Err("Unauthorized: Board members only".to_string());
     }
@@ -1030,11 +1030,11 @@ public async fn propose_ens_update(
 **Step 3: Board Members Vote (3-of-3)**
 
 ```typescript
-// Board members authenticate with authors.cpf.nft
+// Board members authenticate with governance.cpf.nft
 const authClient = await AuthClient.create();
 await authClient.login({
   identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://authors.cpf.nft",  // Board only
+  derivationOrigin: "https://governance.cpf.nft",  // Board only
 });
 
 // Vote on proposal
@@ -1101,7 +1101,7 @@ async fn sign_ethereum_transaction(tx: EthereumTransaction) -> Result<Vec<u8>, S
 
 - ✅ **Fully on-chain governance**: ENS updates governed by same IC multi-sig as canister upgrades
 - ✅ **No personal wallet dependency**: Board doesn't need personal Ethereum wallets
-- ✅ **Same voting mechanism**: Board uses authors.cpf.nft to vote on ENS changes
+- ✅ **Same voting mechanism**: Board uses governance.cpf.nft to vote on ENS changes
 - ✅ **Audit trail**: All ENS changes logged in IC governance proposals
 - ✅ **Threshold security**: ENS controlled by 3-of-3 board approval (via threshold ECDSA)
 - ✅ **No cross-chain custody**: Ethereum address derived deterministically from IC canister
@@ -1178,7 +1178,7 @@ Phase 2: SNS Governance (Mature)
 1. **Bootstrap (Phase 0):**
    - Purchase cpf.nft using personal Ethereum wallet
    - Configure DNS immediately after purchase (see [ens-dns-setup.md](./ens-dns-setup.md))
-   - Create authors.cpf.nft subdomain
+   - Create governance.cpf.nft subdomain
    - Manual DNS updates during development
 
 2. **Production Launch (Phase 1):**

@@ -36,58 +36,58 @@ The Cool Planet People ICP Platform provides the core orchestration layer for th
 
 ```
 cpp_icp_platform/
-├── docs/
-│   ├── architecture/
-│   │   ├── platform-comparison.md      # Strategic architecture analysis
-│   │   └── community-strategy.md       # Community platform implementation
-│   ├── deployment/
-│   └── integration/
-├── canisters/
-│   ├── identity/                       # Cool Planet ID management
-│   ├── community/                      # Camino content + forums
-│   ├── web/                           # Website serving (coolplanet-foundation.org)
-│   └── bridge/                        # Chain Fusion ICP-side logic
-├── sdk/
-│   └── icp/                           # ICP SDK for platform interactions
-├── web/
-│   ├── src/                           # PWA frontend
-│   └── assets/                        # Static assets
-└── scripts/
-    ├── deploy/                        # Deployment automation
-    └── testing/                       # Integration testing
+└── docs/
+    └── architecture/                   # Platform architecture documentation
+        ├── canister-architecture-diagram.md  # Control vs data plane architecture
+        ├── governance-policy.md              # Board governance and voting
+        ├── user-journey-funnel.md            # Progressive user engagement
+        ├── board-introduction.md             # Non-technical board overview
+        └── [additional architecture docs]
 ```
 
-*Note: Canister organization may be distributed across multiple repositories as platform scales*
+**Note:** This repository contains **architecture documentation and governance design**. Implementation is distributed across multiple repositories:
+- **Data plane** (user-facing): cpf_org, fti_newsletter_archive, cpf_members
+- **Ethereum/Polygon**: einstein_solidity
+- **Privacy/contact management**: network_privacy
 
 ## 🔗 Related Repositories
 
-### **[einstein_solidity](../einstein_solidity)**
-- **Purpose**: ERC721/DID compliance, Ethereum/Polygon integration
-- **Scope**: Solidity contracts, JavaScript/TypeScript SDK, Chain Fusion Ethereum-side
-- **Integration**: Chain Fusion bridge coordination with this platform
+### **Data Plane Repositories**
+- **cpf_org**: Main website (coolplanet-foundation.org) - public content
+- **fti_newsletter_archive**: Newsletter portal and blog
+- **cpf_members**: Cool Planet App - authenticated user features (Camino, donations, NFT management)
 
-### **[cfp_nft_website](../cfp_nft_website)**
-- **Status**: Legacy web serving (to be replaced by ICP canisters)
-- **Migration**: coolplanet-foundation.org will be served directly from this platform
+### **Blockchain Integration**
+- **einstein_solidity**: ERC721/DID compliance, Ethereum/Polygon smart contracts
+- **Chain Fusion bridge**: ICP-side coordination with Ethereum/Polygon standards
 
-## 🚀 Development Phases
+### **Supporting Services**
+- **network_privacy**: Privacy-first contact management and MailerLite integration
 
-### **Phase 1: Foundation (Weeks 1-8)**
-- Internet Identity authentication system
-- Core Camino content + first module
-- Meetup calendar and basic NFT visualization
-- PWA optimization for mobile experience
-- Chain Fusion bridge (ICP side)
+## 🚀 Migration Strategy
 
-### **Phase 2: Community Features (Months 1-2)**
-- Discussion forums and member directory
-- Advanced community platform features
-- Enhanced NFT visualization and management
+**Incremental phased rollout from Wix to ICP** with board decision points:
 
-### **Phase 3: Advanced Platform (Months 3-12)**
-- Governance tools and voting systems
-- Educational content platform with payment capabilities
-- Advanced Chain Fusion features and optimizations
+### **Phase A: Newsletters** (IMMINENT)
+- Newsletter portal on ICP
+- **Routing decision pending:** Subdomain vs. path-based
+
+### **Phase B: Cool Planet App** (SOON)
+- Camino educational platform
+- Internet Identity authentication
+- Private feedback to authors
+
+### **Phase C-E: Member Features**
+- Donations with KYC/AML (Stripe integration)
+- NFT awards on Polygon
+- Gated content (webinars, advanced Camino, forums)
+
+### **Phase F: Main Domain** (BOARD DECISION)
+- Replace Wix main site
+- Three milestone options (UX parity, donations, NFT automation)
+- **Timing depends on routing decision**
+
+**See:** [board-introduction.md](docs/architecture/board-introduction.md) for detailed migration strategy
 
 ## 🎯 Campaign Support
 
@@ -99,28 +99,32 @@ cpp_icp_platform/
 
 ## 📚 Key Documentation
 
-### **Architecture Analysis**
-- [Platform Comparison](docs/architecture/platform-comparison.md) - Strategic comparison of blockchain platforms
-- [Community Strategy](docs/architecture/community-strategy.md) - Community platform implementation approach
+### **Start Here**
+- **[board-introduction.md](docs/architecture/board-introduction.md)** - Plain-language overview for board members (non-technical)
+- **[canister-architecture-diagram.md](docs/architecture/canister-architecture-diagram.md)** - Control vs data plane architecture
+- **[user-journey-funnel.md](docs/architecture/user-journey-funnel.md)** - Progressive user engagement from visitor to contributor
 
-### **Integration Guides**
-- Chain Fusion bridge coordination with einstein_solidity
-- Internet Identity OAuth/OIDC integration
-- PWA deployment and mobile optimization
+### **Governance & Operations**
+- [governance-policy.md](docs/architecture/governance-policy.md) - Board voting, time-based thresholds, approval tiers
+- [architectural_decisions.md](docs/architecture/architectural_decisions.md) - Decision log with rationale
 
-## 🔧 Development Setup
-
-*[Development setup instructions will be added as canisters are implemented]*
+### **Strategic Analysis**
+- [platform-comparison.md](docs/architecture/platform-comparison.md) - Why we chose ICP (87% vendor reduction)
+- [ens-dns-setup.md](docs/architecture/ens-dns-setup.md) - ENS/DNS configuration and bootstrap sequence
 
 ## 🤝 Contributing
 
-This repository focuses on ICP orchestration and platform services. For ERC721/DID contract development, see [einstein_solidity](../einstein_solidity).
+This repository contains **architecture documentation and governance design**. For implementation:
+- **Data plane canisters**: See cpf_org, fti_newsletter_archive, cpf_members repositories
+- **Blockchain contracts**: See [einstein_solidity](../einstein_solidity)
+- **Contact management**: See network_privacy repository
 
-**Key Principles:**
-- Educational-first approach (not traditional monetization funnel)
-- Vendor independence and attack surface reduction
-- Swiss jurisdiction for data sovereignty
-- Progressive enhancement based on user adoption
+**Architectural Principles:**
+- **Control plane vs data plane** separation for security and clarity
+- **Consumer vs contributor** user journey paths
+- **Incremental migration** with board decision points and rollback capability
+- **Vendor independence** (87% reduction vs traditional web3 stack)
+- **Swiss jurisdiction** for data sovereignty and governance
 
 ---
 

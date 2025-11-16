@@ -315,15 +315,15 @@ dfx canister update-settings backend_api \
 
 ---
 
-#### **Level 2: Board Governance (authors.cpf.nft identities)**
+#### **Level 2: Board Governance (governance.cpf.nft identities)**
 
 **Purpose:** Strategic governance of ENS and IC infrastructure
 
 **Who:**
 - 3 board members
-- **Authenticate using authors.cpf.nft derivation origin**
+- **Authenticate using governance.cpf.nft derivation origin**
 
-**Principal Type:** Internet Identity (authors.cpf.nft derivation)
+**Principal Type:** Internet Identity (governance.cpf.nft derivation)
 
 **Capabilities:**
 - Control cpf.nft ENS NFT (update DNS, create subdomains)
@@ -335,11 +335,11 @@ dfx canister update-settings backend_api \
 
 **Example:**
 ```typescript
-// Board member authenticates with authors.cpf.nft
+// Board member authenticates with governance.cpf.nft
 const authClient = await AuthClient.create();
 await authClient.login({
   identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://authors.cpf.nft",  // ← Board only!
+  derivationOrigin: "https://governance.cpf.nft",  // ← Board only!
   onSuccess: () => {
     const principal = authClient.getIdentity().getPrincipal().toText();
     // This principal can submit/approve governance proposals
@@ -349,12 +349,12 @@ await authClient.login({
 
 **Bootstrap:**
 ```bash
-# 1. Configure authors.cpf.nft DNS → governance_canister
+# 1. Configure governance.cpf.nft DNS → governance_canister
 # See ens-dns-setup.md § Phase 2
 
-# 2. Board members authenticate with authors.cpf.nft
-# Get their II principals (from authors.cpf.nft derivation)
-BOARD_MEMBER_1="xxxxx-xxxxx-xxxxx"  # From authors.cpf.nft auth
+# 2. Board members authenticate with governance.cpf.nft
+# Get their II principals (from governance.cpf.nft derivation)
+BOARD_MEMBER_1="xxxxx-xxxxx-xxxxx"  # From governance.cpf.nft auth
 
 # 3. Initialize board members in voting canister
 dfx canister call voting_canister initializeBoardMembers \
@@ -362,7 +362,7 @@ dfx canister call voting_canister initializeBoardMembers \
   --network ic
 ```
 
-**Key Insight:** Board members get **different Internet Identity principals** when using authors.cpf.nft vs cpf.nft!
+**Key Insight:** Board members get **different Internet Identity principals** when using governance.cpf.nft vs cpf.nft!
 
 ---
 
@@ -429,24 +429,24 @@ dfx canister call backend_api initializeSuperadmin \
 | Level | Principal Type | Derivation Origin | Purpose | Bootstrap Method |
 |-------|---------------|------------------|---------|-----------------|
 | **Controller** | dfx identity | N/A | Infrastructure | `dfx deploy` |
-| **Board Governance** | Internet Identity | **authors.cpf.nft** | Strategic governance | `initializeBoardMembers()` |
+| **Board Governance** | Internet Identity | **governance.cpf.nft** | Strategic governance | `initializeBoardMembers()` |
 | **Technical Admin** | Internet Identity | **cpf.nft** | Application admin | `initializeSuperadmin()` |
 
 **Why This Matters:**
 
 1. **Bootstrap Facilitation:**
    - Controller deploys everything (dfx identity)
-   - Board identities established with authors.cpf.nft
+   - Board identities established with governance.cpf.nft
    - Board controls transition to governance
    - Technical admins use cpf.nft (separate from board)
 
 2. **Security Isolation:**
-   - Board governance identities (authors.cpf.nft) never exposed to user-facing services
+   - Board governance identities (governance.cpf.nft) never exposed to user-facing services
    - Even if cpf.nft services compromised, governance safe
    - Board members can have user accounts with different principals
 
 3. **Operational Clarity:**
-   - Strategic decisions (board via authors.cpf.nft)
+   - Strategic decisions (board via governance.cpf.nft)
    - Technical operations (admins via cpf.nft)
    - Clear separation in audit trails
 

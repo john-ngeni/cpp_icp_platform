@@ -21,7 +21,7 @@ This document covers the **technical DNS configuration** required to point **any
 - Registration via IC API
 
 **Applies To:**
-- ✅ ENS authors.cpf.nft (control plane - governance, infrastructure)
+- ✅ ENS governance.cpf.nft (control plane - governance, infrastructure)
 - ✅ ENS cpf.nft (data plane - user operations)
 - ✅ Traditional domains (coolplanet-foundation.org, newsletters.coolplanet-foundation.org)
 - ✅ Any domain pointing to IC canisters

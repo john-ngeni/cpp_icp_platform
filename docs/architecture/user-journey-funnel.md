@@ -1,9 +1,12 @@
 # CPP User Journey Funnel: Progressive Authentication & Access Gates
 
 **Date:** 2025-11-13
+**Audience:** Technical readers (developers, architects)
 **Purpose:** Define the progressive user journey through CPP platform with authentication gates
 **Context:** Maps user progression from anonymous visitor to full community member
 **Cross-Reference:** See [origins.md](./origins.md) for derivation origin strategy
+
+**For Board Members:** See [board-introduction.md](./board-introduction.md) for a plain-language version of the user journey and decision points.
 
 ## Executive Summary
 
@@ -11,64 +14,148 @@ The CPP platform uses a **progressive disclosure and authentication funnel** whe
 
 **Key Principle:** *Minimum friction for discovery, progressive authentication for deeper engagement*
 
-**Important Architecture Context:**
-- **This funnel describes the DATA PLANE** (cpf.nft) - user-facing operations
-- **Separate CONTROL PLANE** exists (authors.cpf.nft) - governance and infrastructure management
-- Board members and operations staff have TWO identities:
-  - `authors.cpf.nft` → Control plane (governance, upgrades, financial decisions)
-  - `cpf.nft` → Data plane (content creation, moderation - same funnel as users)
-- See [canister-architecture-diagram.md](./canister-architecture-diagram.md) for control/data plane architecture
+**Color Coding - Progressive User Investment:**
+- 🟢 **Light Green:** Minimal investment (analytics consent)
+- 🔵 **Blue:** Email commitment
+- 🟣 **Purple:** Identity verification (Internet Identity + Gravatar)
+- 🟠 **Orange:** Financial investment (donations with KYC)
+- 🔴 **Red:** Ownership commitment (NFT holder)
+- ⚫ **Dark:** Full platform engagement
+
+**Content Visibility:**
+- 🌐 **SEO (Public):** Websites, Blogs, Newsletters - discoverable via search engines, no login required
+- 📱 **Cool Planet App (Gated):** Requires Internet Identity - not indexed by search engines
 
 ## Funnel Overview
 
+**Progressive User Investment Unlocks Progressive Content Access:**
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'edgeLabelBackground':'#ffffff', 'primaryColor':'#ffffff'}}}%%
+graph TB
+    subgraph Public["🌐 Public Content (SEO-indexed)"]
+        AC["Analytics Consent"]
+        W["Websites"]
+        EA["Email Address"]
+        N["Newsletter(s)"]
+
+        subgraph App["📱 Cool Planet App (Requires Internet Identity)"]
+            II["Internet Identity"]
+            FB["Feedback<br/>(private to Authors)"]
+            CAM["Camino (self-pace)"]
+
+            subgraph Members["👥 Members (Donors & NFT Holders)"]
+                KYC["KYC/AML Verification<br/>>$1K: KYC, >$15K: Enhanced"]
+                D["CPF Donations"]
+                WEB["Webinars + replays"]
+                WO["Wallet Connection<br/>(optional: IC-derived)"]
+                NFT["NFT"]
+                CTM["Climbing the Mountain"]
+
+                subgraph BA["✍️ Budding Authors (Content Contributors)"]
+                    GRAV["+ Gravatar Profile"]
+                    COM["Comments<br/>(public/visible to community)"]
+                    COMP["Camino Completion"]
+                    GDF["Gated Discussion Forums"]
+                    FPA["Full Platform Access"]
+                end
+            end
+        end
+    end
+
+    %% Flow cascade
+    AC --> W
+    W --> N
+    EA --> N
+
+    N --> II
+    II --> FB
+    II --> CAM
+
+    II --> D
+    KYC --> D
+    D --> WEB
+
+    D --> NFT
+    WO --> NFT
+    NFT --> CTM
+
+    NFT --> GRAV
+    GRAV --> COM
+    CTM --> COMP
+    COMP --> GDF
+    GDF --> FPA
+
+    %% Color coding by progressive investment
+    style AC fill:#90EE90,stroke:#2d5016,color:#000
+    style W fill:#90EE90,stroke:#2d5016,color:#000
+    style EA fill:#87CEEB,stroke:#104e8b,color:#000
+    style N fill:#87CEEB,stroke:#104e8b,color:#000
+    style II fill:#DDA0DD,stroke:#4b0082,color:#000
+    style GRAV fill:#DDA0DD,stroke:#4b0082,color:#000
+    style KYC fill:#FFB366,stroke:#8b4500,color:#000
+    style D fill:#FFB366,stroke:#8b4500,color:#000
+    style WO fill:#FF6B6B,stroke:#8b0000,color:#fff
+    style NFT fill:#FF6B6B,stroke:#8b0000,color:#fff
+    style COMP fill:#404040,stroke:#000,color:#fff
+    style GDF fill:#404040,stroke:#000,color:#fff
+    style FPA fill:#404040,stroke:#000,color:#fff
+
+    %% Content/features unlocked (blue)
+    style FB fill:#0088cc,stroke:#003d5c,color:#fff
+    style CAM fill:#0088cc,stroke:#003d5c,color:#fff
+    style COM fill:#0088cc,stroke:#003d5c,color:#fff
+    style WEB fill:#0088cc,stroke:#003d5c,color:#fff
+    style CTM fill:#0088cc,stroke:#003d5c,color:#fff
+
+    %% Subgraph styling - same hue, different saturation
+    style Public fill:#f0f8ff,stroke:#4da6ff,stroke-width:3px
+    style App fill:#d9ecff,stroke:#3385ff,stroke-width:3px
+    style Members fill:#b3d9ff,stroke:#0066ff,stroke-width:3px
+    style BA fill:#80bfff,stroke:#0052cc,stroke-width:3px
+
+    %% Black arrows
+    linkStyle default stroke:#000,stroke-width:2px
 ```
-Anonymous Visitor
-    ↓ [Analytics Consent]
-Newsletter Reader
-    ↓ [Email Address]
-Blog Commenter
-    ↓ [CPF ID (II based) + Gravatar Profile]
-Donor
-    ↓ [KYC for >$1000, Enhanced KYC for >$15000]
-NFT Holder
-    ↓ [Wallet Optional]
-Community Member
-    ↓ [Camino Module Completion]
-Full Platform Access
-```
+
+**Architecture - Concentric Circles:**
+- **🌐 Public Content** (outermost): Websites and Newsletters - SEO-indexed, no login required
+- **📱 Cool Planet App** (requires Internet Identity): Feedback (private), Camino (learning)
+- **👥 Members** (Donors & NFT Holders): Donations, Webinars, NFT, Advanced Camino
+- **✍️ Budding Authors** (innermost): Content Contributors - Comments, Forums, Full Platform Access
+
+**Progressive Investment Journey:**
+- 🟢 **Level 1 (Minimal):** Analytics consent → Browse website (Public)
+- 🔵 **Level 2 (Email):** Email address → Newsletters + Blogs (Public)
+- 🟣 **Level 3 (Identity):** Internet Identity → Enter Cool Planet App (Feedback to Authors, Camino, Donations)
+- 🟠 **Level 4 (Financial):** Donations with KYC → Enter Members area (Webinars, advanced content)
+- 🔴 **Level 5 (Ownership):** NFT holder → Climbing the Mountain (advanced Camino modules)
+- ⚫ **Level 6a (Content Contributor):** NFT holder adds Gravatar → Public Comments (become Budding Author)
+- ⚫ **Level 6b (Full Engagement):** Complete Camino modules → Gated Forums, Full Platform Access
+
+**Key Principles:**
+- Greater user investment unlocks deeper access within the platform (concentric progression)
+- One Cool Planet App with progressive feature unlocks (not separate portals)
+- **Consumer vs Contributor paths:**
+  - **Consumer path:** II → Feedback (private) → Donations → NFT → Advanced content
+  - **Contributor path:** NFT holder → Gravatar → Comments → Forums → Full Platform Access
+- **Feedback vs Comments:** II enables private feedback to Authors; NFT + Gravatar enables public community comments
+- **SEO Boundary:** Public content is searchable; everything inside Cool Planet App is gated and not indexed
 
 ## Detailed Gate Progression
 
-### **Gate 1: Websites → Newsletter(s)**
+### 🟢 **Gate 1: Websites → Newsletter(s)** (Level 1: Minimal Investment)
 
 **Repository:** `cpf_org` (coolplanet-foundation.org)
-**Requirement:** Analytics consent
+**User Investment:** Analytics consent
 **Purpose:** Public discovery and information gathering
+**Content Type:** SEO-discoverable
 
 **User Flow:**
 1. User visits `coolplanet-foundation.org` (served by cpf_org asset canister)
 2. Analytics consent banner appears (GDPR compliance)
 3. User can browse public content without account
 4. Call-to-action: "Subscribe to Newsletter" button
-
-**Technical Implementation:**
-```svelte
-<!-- cpf_org/src/routes/+page.svelte -->
-<script>
-  import { analyticsConsent } from '$lib/stores/consent';
-  import NewsletterSignup from '$lib/components/NewsletterSignup.svelte';
-</script>
-
-<!-- Analytics consent banner -->
-{#if !$analyticsConsent}
-  <ConsentBanner />
-{/if}
-
-<!-- Public content accessible without authentication -->
-<Hero />
-<AboutSection />
-<NewsletterSignup />
-```
 
 **Data Collected:**
 - Analytics: Page views, time on site, referrers (with consent)
@@ -81,31 +168,19 @@ Full Platform Access
 
 ---
 
-### **Gate 2: Newsletter(s) → Newsletter/Blog Comments (CPF)**
+### 🔵 **Gate 2: Newsletter(s) → Newsletter/Blog Comments (CPF)** (Level 2: Email Commitment)
 
 **Repository:** `fti_newsletter_archive` (newsletters.coolplanet-foundation.org)
-**Requirement:** Email address
+**User Investment:** Email address
 **Purpose:** Newsletter delivery and basic engagement
+
+🌐 **Public Content:** Newsletters and blogs (SEO-indexed, no login required)
 
 **User Flow:**
 1. User submits email on `coolplanet-foundation.org`
 2. Redirected to `newsletters.coolplanet-foundation.org` for subscription confirmation
 3. Email added to MailerLite (via network_privacy integration)
 4. User receives newsletters but cannot comment yet
-
-**Technical Implementation:**
-```typescript
-// fti_newsletter_archive/src/components/NewsletterSubscription.tsx
-export async function subscribeToNewsletter(email: string) {
-  // Add to MailerLite via network_privacy integration
-  await fetch('/api/subscribe', {
-    method: 'POST',
-    body: JSON.stringify({ email }),
-  });
-
-  // No CPF ID created yet - just email subscription
-}
-```
 
 **Data Collected:**
 - Email address (required)
@@ -119,85 +194,51 @@ export async function subscribeToNewsletter(email: string) {
 
 ---
 
-### **Gate 3: Newsletter/Blog Comments (CPF) → CPF Donations**
+### 🟣 **Gate 3: Newsletter(s) → Cool Planet App** (Level 3: Identity Commitment)
 
-**Repository:** `fti_newsletter_archive` (newsletters.coolplanet-foundation.org)
-**Requirements:**
-- **CPF ID (II based)** - Internet Identity principal required to read
-- **Gravatar Profile** - Required to write comments
+**Repository:** `fti_newsletter_archive` + `cpf_members` (Cool Planet App)
+**User Investment:** Internet Identity (required)
 
-**Purpose:** Enable authenticated commenting and community discussion
+**Purpose:** Enable authenticated engagement and learning
+
+📱 **App-Gated Content Unlocked (requires Internet Identity, not SEO-indexed):**
+- **Feedback** - Private input on Blogs/Newsletters/Camino (only Authors see it)
+- **Camino** - Self-paced educational platform
+- **Donations** - Ability to financially support the platform
 
 **User Flow:**
-1. User clicks "Sign In to Comment" on newsletter
+1. User clicks "Sign In" on newsletter or blog
 2. Redirected to Internet Identity for authentication
 3. Returns with principal (CPF ID created automatically)
-4. User prompted to set up Gravatar profile to post comments
-5. Can now read all content (authenticated) and write comments (Gravatar configured)
-
-**Technical Implementation:**
-```typescript
-// fti_newsletter_archive/src/components/Comments.tsx
-import { AuthClient } from '@dfinity/auth-client';
-
-export function CommentSection() {
-  const { isAuthenticated, principal } = useAuth();
-  const { hasGravatar, gravatarEmail } = useGravatar();
-
-  if (!isAuthenticated) {
-    return <SignInPrompt message="Sign in with Internet Identity to read comments" />;
-  }
-
-  if (!hasGravatar) {
-    return <GravatarSetup message="Set up Gravatar to post comments" />;
-  }
-
-  return <CommentThread canRead={isAuthenticated} canWrite={hasGravatar} />;
-}
-```
-
-**Internet Identity Integration:**
-```typescript
-// Derivation origin: cpf.nft (canonical)
-const authClient = await AuthClient.create();
-await authClient.login({
-  identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://cpf.nft", // Ensures consistent principal across all CPP services
-  onSuccess: async () => {
-    const principal = authClient.getIdentity().getPrincipal();
-    // Create CPF ID record in backend
-    await backend.createOrUpdateUserProfile(principal);
-  }
-});
-```
+4. Can now provide private Feedback to Authors on content
+5. Can access Camino educational content
+6. Can make donations to support the platform
 
 **Data Collected:**
 - Internet Identity principal (CPF ID)
-- Gravatar email (for profile picture and identity)
-- Comment content and timestamps
+- Feedback content (private) and timestamps
 - User permissions (RBAC: Viewer, Author, Editor, Admin, Superadmin)
 
 **Network Privacy Integration:**
-- User may upgrade to `C_XXXX` (Collaboration Partners) if actively commenting
+- User may upgrade to `C_XXXX` (Collaboration Partners) if actively providing feedback
 - Professional consent for networking (if appropriate)
 - No KYC required at this stage
 
-**Side Path: Camino Beta Invitation**
-- **Trigger:** Active commenters with quality contributions
-- **Action:** Invite subset of commenters to Camino Beta (educational content platform)
-- **Requirement:** Still using CPF ID + Gravatar, no additional authentication
-- **Purpose:** Test educational content and engagement before full launch
-
 ---
 
-### **Gate 4: CPF Donations → NFT**
+### 🟠 **Gate 4: Cool Planet App → CPF Donations** (Level 4: Financial Commitment)
 
-**Repository:** `cpf_members` (members.coolplanet-foundation.org)
-**Requirements:**
-- **KYC required for donations > $1,000**
-- **Enhanced KYC/KYB for donations > $15,000**
+**Repository:** `cpf_members` (Cool Planet App)
+**User Investment:**
+- **Internet Identity** (required for donations)
+- **Donation with KYC/AML compliance**
+- >$1,000: KYC verification required
+- >$15,000: Enhanced KYC/KYB required
 
 **Purpose:** Financial compliance and donation processing
+
+📱 **App-Gated Content Unlocked (not SEO-indexed):**
+- Webinars + on-demand replays
 
 **User Flow:**
 1. User clicks "Donate" on `coolplanet-foundation.org`
@@ -208,67 +249,8 @@ await authClient.login({
    - **> $1,000:** Einstein DID KYC verification required
    - **> $15,000:** Enhanced KYC/KYB (business verification if applicable)
 5. Payment processed via Stripe webhook to payment_bridge canister
-6. Donation recorded in Motoko backend
+6. Donation recorded in backend
 7. NFT minting triggered on Polygon (if applicable)
-
-**Technical Implementation:**
-```typescript
-// cpf_members/src/backend_canister/main.mo
-actor MembersBackend {
-  // Process donation and determine KYC requirements
-  public shared(msg) func processDonation(amount: Nat): async Result<DonationId, Text> {
-    let principal = msg.caller;
-
-    // KYC requirement check
-    if (amount > 1000) {
-      // Verify KYC via Einstein DID integration
-      let kycVerified = await verifyKYC(principal);
-      if (not kycVerified) {
-        return #err("KYC verification required for donations > $1,000");
-      };
-    };
-
-    if (amount > 15000) {
-      // Enhanced KYC/KYB required
-      let enhancedKYC = await verifyEnhancedKYC(principal);
-      if (not enhancedKYC) {
-        return #err("Enhanced KYC/KYB required for donations > $15,000");
-      };
-    };
-
-    // Process donation
-    let donationId = await recordDonation(principal, amount);
-
-    // Trigger NFT minting if applicable
-    await mintNFT(principal, donationId, amount);
-
-    #ok(donationId)
-  };
-}
-```
-
-**Stripe Webhook Processing:**
-```rust
-// cpf_members/src/payment_bridge/lib.rs
-#[update]
-fn handle_stripe_webhook(payload: String, signature: String) -> Result<(), String> {
-    // HMAC-SHA256 signature verification
-    verify_stripe_signature(&payload, &signature)?;
-
-    // Parse webhook event
-    let event: StripeEvent = serde_json::from_str(&payload)?;
-
-    match event.event_type {
-        "payment_intent.succeeded" => {
-            // Route to backend canister for business logic
-            ic_cdk::call(backend_canister_id(), "process_payment_success", (event,)).await?;
-        },
-        _ => return Err("Unhandled event type".to_string()),
-    }
-
-    Ok(())
-}
-```
 
 **Data Collected:**
 - **< $1,000:** Name, email, address (Stripe)
@@ -292,11 +274,16 @@ fn handle_stripe_webhook(payload: String, signature: String) -> Result<(), Strin
 
 ---
 
-### **Gate 5: NFT → Gated Discussion Forum(s)**
+### 🔴 **Gate 5: NFT → Gated Discussion Forum(s)** (Level 5: Ownership Commitment)
 
-**Repository:** `cpf_members` (members.coolplanet-foundation.org) + `cpp_icp_platform`
-**Requirement:** Wallet optional (can use derived IC-Polygon address)
+**Repository:** `cpf_members` (Cool Planet App) + `cpp_icp_platform`
+**User Investment:** NFT ownership (received via donation)
+- Wallet connection optional (can use IC-derived Polygon address)
+
 **Purpose:** NFT ownership verification and portfolio management
+
+📱 **App-Gated Content Unlocked (not SEO-indexed):**
+- Climbing the Mountain (advanced Camino modules)
 
 **User Flow:**
 1. User receives NFT after donation (minted on Polygon)
@@ -306,41 +293,6 @@ fn handle_stripe_webhook(payload: String, signature: String) -> Result<(), Strin
    - **Option B:** Connect external wallet (WalletConnect) for advanced features
 4. NFT ownership tracked in Wallet Cache canister
 5. Can view portfolio, sponsorship patterns, and NFT metadata
-
-**Technical Implementation:**
-```typescript
-// cpf_members/src/backend_canister/wallet.mo
-actor WalletBackend {
-  // Derive Polygon address from IC principal
-  public shared(msg) func getDerivedPolygonAddress(): async Text {
-    let principal = msg.caller;
-    let polygonAddress = derivePolygonAddress(principal); // Chain-key cryptography
-    polygonAddress
-  };
-
-  // Get user's NFT holdings
-  public shared(msg) func getNFTHoldings(): async [NFT] {
-    let principal = msg.caller;
-    let polygonAddress = await getDerivedPolygonAddress();
-
-    // Query Wallet Cache for holdings
-    let holdings = await WalletCache.getHoldings(polygonAddress);
-    holdings
-  };
-}
-```
-
-**Wallet Cache Integration:**
-```motoko
-// cpp_icp_platform/canisters/wallet_cache/main.mo
-actor WalletCache {
-  // Chain Fusion bridge updates wallet cache when NFTs are minted
-  public func updateHoldings(address: Text, tokenId: Nat): async () {
-    // Listen to Polygon NFTMinted events
-    // Update holdings in real-time
-  };
-}
-```
 
 **Data Collected:**
 - NFT token IDs and metadata
@@ -361,59 +313,41 @@ actor WalletCache {
 
 ---
 
-### **Gate 6: Gated Discussion Forum(s) → Full Platform Access**
+### ⚫ **Gate 6: NFT → Budding Authors** (Level 6: Content Contributors)
 
-**Repository:** `cpp_icp_platform` (community canisters)
-**Requirement:** Camino module completion
-**Purpose:** Full community engagement and governance participation
+**Repository:** `cpp_icp_platform` (community canisters) + `cpf_members` (Cool Planet App)
+**User Investment:** NFT ownership + Gravatar Profile (for public contribution) + Camino completion (for full access)
+**Purpose:** Become a content contributor and access full community engagement
+
+📱 **App-Gated Content Unlocked (not SEO-indexed):**
+
+**Level 6a - Adding Gravatar (Content Contributor):**
+- **Public Comments** - Visible to community on Blogs/Newsletters/Camino
+- Transition from consumer to contributor
+
+**Level 6b - Camino Completion (Full Platform Access):**
+- **Gated Discussion Forums** - Advanced community discussions
+- **Full Platform Access** - All features, governance participation
 
 **User Flow:**
-1. User completes Camino educational modules
+
+**Level 6a - Becoming a Content Contributor:**
+1. User is an NFT holder (Member)
+2. User chooses to add Gravatar profile
+3. Links Gravatar email to CPF ID
+4. Can now write public Comments visible to entire community
+5. Becomes a "Budding Author" (content contributor)
+
+**Level 6b - Achieving Full Platform Access:**
+1. User (Budding Author) completes Camino educational modules
 2. Achievement NFTs unlocked (on-chain credentials)
 3. Gains access to gated discussion forums (subset by bundle or achievement)
 4. Can participate in governance (voting, proposals)
-5. Full member benefits (conference access, advanced features, etc.)
-
-**Technical Implementation:**
-```motoko
-// cpp_icp_platform/canisters/community/main.mo
-actor Community {
-  // Check Camino module completion
-  public shared(msg) func checkCaminoAccess(forumId: Text): async Bool {
-    let principal = msg.caller;
-
-    // Check required modules for this forum
-    let requiredModules = getForumRequirements(forumId);
-    let completedModules = await CaminoBackend.getUserCompletions(principal);
-
-    // Verify all required modules completed
-    hasCompletedAll(completedModules, requiredModules)
-  };
-
-  // Grant forum access
-  public shared(msg) func accessForum(forumId: Text): async Result<ForumAccess, Text> {
-    let hasAccess = await checkCaminoAccess(forumId);
-
-    if (not hasAccess) {
-      return #err("Complete required Camino modules to access this forum");
-    };
-
-    #ok(grantForumAccess(msg.caller, forumId))
-  };
-}
-```
-
-**Achievement System:**
-```motoko
-// Track on-chain achievements
-public func awardAchievement(principal: Principal, achievement: Achievement): async () {
-  // Mint achievement NFT on Polygon
-  // Update user's achievement record
-  // Unlock new forum/feature access
-};
-```
+5. Full platform benefits (conference access, advanced features, etc.)
 
 **Data Collected:**
+- Gravatar email (for profile picture and public identity)
+- Comment content (public) and timestamps
 - Camino module progress and completions
 - Achievement NFT ownership
 - Forum participation and contributions
@@ -422,36 +356,14 @@ public func awardAchievement(principal: Principal, achievement: Achievement): as
 **Network Privacy Integration:**
 - User fully transitioned to `P_XXXX` (Cool Planet People)
 - Full profile with comprehensive engagement history
-- MailerLite segment: CPF_Full_Members
+- MailerLite segment: CPF_Budding_Authors (Level 6a), CPF_Full_Members (Level 6b)
 - Enhanced features and VIP access
 
 ## Cross-Repository Authentication Flow
 
 ### **Shared Derivation Origin: cpf.nft**
 
-All repositories use the **same derivation origin** (`cpf.nft`) to ensure users have the **same Internet Identity principal** across all CPP services:
-
-```typescript
-// Common auth configuration across all repos
-
-// cpf_org (public site)
-await authClient.login({
-  identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://cpf.nft"
-});
-
-// fti_newsletter_archive (newsletters)
-await authClient.login({
-  identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://cpf.nft" // Same principal as cpf_org
-});
-
-// cpf_members (member portal)
-await authClient.login({
-  identityProvider: "https://identity.ic0.app",
-  derivationOrigin: "https://cpf.nft" // Same principal everywhere
-});
-```
+All repositories use the **same derivation origin** (`cpf.nft`) to ensure users have the **same Internet Identity principal** across all CPP services.
 
 **Why This Matters:**
 - User authenticates **once** with Internet Identity
@@ -462,37 +374,44 @@ await authClient.login({
 
 ### **Domain Routing Strategy**
 
-Based on [architectural_decisions.md § OQ-001](./architectural_decisions.md) and [origins.md](./origins.md), CPP uses **subdomain-based routing with alternative origins**:
+**Note: Routing decision pending** - Subdomain vs. path-based routing still under consideration.
 
-**Primary Domains:**
+Based on [architectural_decisions.md § OQ-001](./architectural_decisions.md) and [origins.md](./origins.md), the current architecture plan uses **subdomain-based routing with alternative origins** (subject to final decision):
+
+**Potential Subdomain Approach:**
 ```
-# Data Plane (users, authors in content role)
+# User-Facing Domains
 cpf.nft                                    → cpf_org (public site) [ENS domain]
 newsletters.coolplanet-foundation.org      → fti_newsletter_archive
-members.coolplanet-foundation.org          → cpf_members
+coolplanet-app.coolplanet-foundation.org   → cpf_members (Cool Planet App)
+  OR
+members.coolplanet-foundation.org          → cpf_members (Cool Planet App)
 
-# Control Plane (board, operations staff)
-authors.cpf.nft                            → governance_canister [ENS subdomain]
+# Governance Domain (board voting and platform management)
+governance.cpf.nft                            → governance_canister [ENS subdomain]
+```
+
+**Potential Path-Based Alternative:**
+```
+# User-Facing Domain
+cpf.nft or coolplanet-foundation.org       → All content served from single domain
+  /newsletters                             → fti_newsletter_archive
+  /app or /members                         → cpf_members (Cool Planet App)
+
+# Governance Domain (board voting and platform management)
+governance.cpf.nft                            → governance_canister [ENS subdomain]
 ```
 
 **Alternative Origins Configuration:**
 
-All data plane domains serve the same canisters and share Internet Identity principals via alternative origins:
-
-```json
-// Served from cpf.nft/.well-known/ii-alternative-origins
-{
-  "alternativeOrigins": [
-    "https://cpf.nft",
-    "https://newsletters.coolplanet-foundation.org",
-    "https://members.coolplanet-foundation.org",
-    "https://coolplanet-foundation.org"
-  ]
-}
-```
+All user-facing domains serve the same canisters and share Internet Identity principals via alternative origins configuration. This allows users to seamlessly access all CPP services with a single login across:
+- cpf.nft
+- newsletters.coolplanet-foundation.org
+- members.coolplanet-foundation.org
+- coolplanet-foundation.org
 
 **Key Benefits:**
-- Same Internet Identity principal across all data plane domains
+- Same Internet Identity principal across all user-facing domains
 - Subdomain isolation for security (different canisters)
 - ENS domain (cpf.nft) as canonical derivation origin
 - Traditional .org domains for user familiarity
@@ -554,7 +473,7 @@ Per network_privacy architecture:
 
 ## Implementation Checklist
 
-**Note:** This checklist focuses on DATA PLANE features. For CONTROL PLANE deployment (governance, voting, ENS management), see [canister-architecture-diagram.md § Bootstrap Sequence](./canister-architecture-diagram.md).
+**Note:** This checklist focuses on user-facing features. For governance deployment (board voting, platform management), see [canister-architecture-diagram.md § Bootstrap Sequence](./canister-architecture-diagram.md).
 
 **Production Migration Strategy:** See [canister-architecture-diagram.md § Production Migration](./canister-architecture-diagram.md) for phased rollout plan including:
 - Phase A: Subdomain Launch (newsletters.*, members.* on ICP)
@@ -595,7 +514,7 @@ Per network_privacy architecture:
 ## Related Documentation
 
 **Architecture Overview:**
-- [canister-architecture-diagram.md](./canister-architecture-diagram.md) - **CRITICAL** - Control/data plane architecture, production migration strategy
+- [canister-architecture-diagram.md](./canister-architecture-diagram.md) - **CRITICAL** - System architecture, production migration strategy
 - [architectural_decisions.md](./architectural_decisions.md) - Decision log including domain routing strategy (OQ-001)
 - [system-architecture-overview.md](./system-architecture-overview.md) - Overall system architecture
 
@@ -605,7 +524,7 @@ Per network_privacy architecture:
 
 **Governance & Operations:**
 - [governance-policy.md](./governance-policy.md) - Board governance structure and approval tiers
-- [admin-architecture.md](./admin-architecture.md) - Control plane security and bootstrap patterns
+- [admin-architecture.md](./admin-architecture.md) - Governance platform security and bootstrap patterns
 - [crypto_funding.md](./crypto_funding.md) - Thermostat algorithm for crypto treasury management
 
 **Security & Privacy:**
@@ -614,7 +533,7 @@ Per network_privacy architecture:
 
 ---
 
-**Last Updated:** 2025-11-14
-**Version:** 1.1.0 (Updated for control/data plane alignment)
+**Last Updated:** 2025-11-16
+**Version:** 1.5.0 (Restructured with Gravatar/Comments in Budding Authors - distinguishes Consumer vs Contributor paths, NFT holders can become content contributors)
 **Status:** Active Development
 **Review Cycle:** Update with each new gate implementation

@@ -11,7 +11,7 @@
 
 The Cool Planet Platform (CPP) is built on **two distinct operational planes**:
 
-### **Control Plane (authors.cpf.nft) - THIS REPO**
+### **Control Plane (governance.cpf.nft) - THIS REPO**
 - **Purpose:** Infrastructure, governance, strategic operations
 - **Who:** Board members, operations staff
 - **What:** Canister upgrades, ENS management, financial decisions, governance voting
@@ -25,7 +25,7 @@ The Cool Planet Platform (CPP) is built on **two distinct operational planes**:
 
 ### **Key Insight: Authors Have TWO Identities**
 Authors authenticate with **two different Internet Identity principals**:
-1. **authors.cpf.nft** → For control plane (governance, infrastructure)
+1. **governance.cpf.nft** → For control plane (governance, infrastructure)
 2. **cpf.nft** → For data plane (creating content, moderating)
 
 ---
@@ -34,7 +34,7 @@ Authors authenticate with **two different Internet Identity principals**:
 
 ```mermaid
 graph TB
-    subgraph CONTROL["<b>CONTROL PLANE</b><br/>authors.cpf.nft<br/>Repository: cpp_icp_platform"]
+    subgraph CONTROL["<b>CONTROL PLANE</b><br/>governance.cpf.nft<br/>Repository: cpp_icp_platform"]
         style CONTROL fill:#1a237e,stroke:#1565c0,stroke-width:4px,color:#ffffff
 
         BOARD["<b>Board Members</b><br/>3 members<br/>Strategic governance"]
@@ -75,9 +75,9 @@ graph TB
         POLYGON["<b>Polygon/Ethereum</b><br/>NFTs, ENS"]
     end
 
-    %% Control plane uses authors.cpf.nft
-    BOARD -.->|authors.cpf.nft| II
-    OPS -.->|authors.cpf.nft| II
+    %% Control plane uses governance.cpf.nft
+    BOARD -.->|governance.cpf.nft| II
+    OPS -.->|governance.cpf.nft| II
 
     %% Data plane uses cpf.nft
     USERS -.->|cpf.nft| II
@@ -118,7 +118,7 @@ The control plane manages **infrastructure, governance, and strategic operations
 
 ```mermaid
 graph TB
-    subgraph AUTHORS["<b>Control Plane Identity</b><br/>authors.cpf.nft"]
+    subgraph AUTHORS["<b>Control Plane Identity</b><br/>governance.cpf.nft"]
         style AUTHORS fill:#1a237e,stroke:#1565c0,stroke-width:3px,color:#ffffff
 
         B1["Board Member 1"]
@@ -139,7 +139,7 @@ graph TB
     subgraph MANAGED["<b>Managed Resources</b>"]
         style MANAGED fill:#455a64,stroke:#546e7a,stroke-width:2px,color:#ffffff
 
-        ENS_NFT["<b>cpf.nft ENS NFT</b><br/>Ethereum mainnet<br/>DNS control<br/>authors.cpf.nft subdomain"]
+        ENS_NFT["<b>cpf.nft ENS NFT</b><br/>Ethereum mainnet<br/>DNS control<br/>governance.cpf.nft subdomain"]
 
         CYCLES_MGT["<b>Cycle Management</b><br/>ICP reserves<br/>Auto top-up<br/>Canister funding"]
 
@@ -274,10 +274,10 @@ graph TB
         II["Authentication Service<br/>Derivation-based principals"]
     end
 
-    subgraph CONTROL_ORIGIN["<b>Control Plane Origin</b><br/>authors.cpf.nft"]
+    subgraph CONTROL_ORIGIN["<b>Control Plane Origin</b><br/>governance.cpf.nft"]
         style CONTROL_ORIGIN fill:#1a237e,stroke:#1565c0,stroke-width:3px,color:#ffffff
 
-        BOARD_PRIN["Board Member Principals<br/>xxxxx-xxxxx-xxxxx-cai<br/>(from authors.cpf.nft)"]
+        BOARD_PRIN["Board Member Principals<br/>xxxxx-xxxxx-xxxxx-cai<br/>(from governance.cpf.nft)"]
 
         CONTROL_OPS["Control Plane Operations:<br/>• Governance voting<br/>• Canister upgrades<br/>• ENS management<br/>• Financial decisions"]
     end
@@ -292,7 +292,7 @@ graph TB
         ALT_ORIGINS["Alternative Origins:<br/>• coolplanet-foundation.org<br/>• newsletters.*<br/>• members.*<br/>(same principal via alternative origins)"]
     end
 
-    II -->|Derive from authors.cpf.nft| BOARD_PRIN
+    II -->|Derive from governance.cpf.nft| BOARD_PRIN
     II -->|Derive from cpf.nft| USER_PRIN
 
     BOARD_PRIN --> CONTROL_OPS
@@ -314,9 +314,9 @@ graph TB
 
 ```typescript
 // CONTROL PLANE: Alice votes on governance
-// Login to authors.cpf.nft
+// Login to governance.cpf.nft
 await authClient.login({
-  derivationOrigin: "https://authors.cpf.nft"  // Control plane
+  derivationOrigin: "https://governance.cpf.nft"  // Control plane
 });
 // Alice's principal: "abc123-control-principal-cai"
 // Can: Vote on proposals, upgrade canisters, manage ENS
@@ -347,7 +347,7 @@ graph TB
     subgraph CONTROL["<b>Control Plane - Governance</b>"]
         style CONTROL fill:#1a237e,stroke:#1565c0,stroke-width:3px,color:#ffffff
 
-        BOARD["Board Members<br/>authors.cpf.nft"]
+        BOARD["Board Members<br/>governance.cpf.nft"]
         VOTING["Voting<br/>Canister"]
         GOV["Governance<br/>Canister"]
     end
@@ -457,7 +457,7 @@ graph LR
 ```mermaid
 graph LR
     WALLET["Personal<br/>Ethereum Wallet"] -->|Purchase| ENS["cpf.nft<br/>ENS NFT"]
-    ENS -->|Create subdomain| AUTHORS["authors.cpf.nft"]
+    ENS -->|Create subdomain| AUTHORS["governance.cpf.nft"]
 
     classDef walletNode fill:#616161,stroke:#757575,stroke-width:2px,color:#ffffff
     classDef ensNode fill:#1565c0,stroke:#1976d2,stroke-width:2px,color:#ffffff
@@ -479,7 +479,7 @@ graph TB
     DFX["dfx identity<br/>(controller)"] -->|Deploy| VOTE["Voting<br/>Canister"]
     DFX -->|Deploy| GOV["Governance<br/>Canister"]
 
-    GOV -->|Configure| AUTHORS_DNS["authors.cpf.nft<br/>DNS → governance"]
+    GOV -->|Configure| AUTHORS_DNS["governance.cpf.nft<br/>DNS → governance"]
     AUTHORS_DNS -->|Board authenticates| BOARD["Board Members<br/>Get principals"]
     BOARD -->|Initialize| VOTE
 
@@ -493,8 +493,8 @@ graph TB
 **Steps:**
 1. Deploy voting_canister
 2. Deploy governance_canister
-3. Configure authors.cpf.nft DNS → governance_canister
-4. Board members authenticate with authors.cpf.nft
+3. Configure governance.cpf.nft DNS → governance_canister
+4. Board members authenticate with governance.cpf.nft
 5. Initialize board member principals in voting canister
 
 **See [ens-dns-setup.md](./ens-dns-setup.md) § Phase 1-2**
@@ -1305,7 +1305,7 @@ graph TB
 
         subgraph CONTROL_CANISTERS["Control Plane"]
             style CONTROL_CANISTERS fill:#283593,stroke:#3949ab,stroke-width:2px,color:#ffffff
-            GOV_PROD["Governance<br/>authors.cpf.nft"]
+            GOV_PROD["Governance<br/>governance.cpf.nft"]
             VOTE_PROD["Voting<br/>(backend)"]
         end
 
@@ -1370,7 +1370,7 @@ graph TB
 
 | Origin | Who | Purpose | Principals |
 |--------|-----|---------|------------|
-| **authors.cpf.nft** | Board, operations | Control plane | Governance principals |
+| **governance.cpf.nft** | Board, operations | Control plane | Governance principals |
 | **cpf.nft** | Users, authors (data role) | Data plane | User principals |
 
 ### Key Documentation

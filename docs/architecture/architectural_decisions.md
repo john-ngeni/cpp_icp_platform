@@ -36,13 +36,13 @@ Internet Identity derivation origins enable separating these planes while allowi
 |--------|-------------|------|------|
 | **1. Single domain (cpf.nft)** | All identities from cpf.nft, RBAC in canisters | Simple, single DNS setup | Control plane identities exposed to data plane, phishing risk |
 | **2. Fully separate** | Control, operations, data planes on separate domains | Maximum isolation | Complex, many subdomains |
-| **3. Control/Data Split (CHOSEN)** | authors.cpf.nft (control), cpf.nft (data) | Clean plane separation, authors dual identity | Authors need two II principals |
+| **3. Control/Data Split (CHOSEN)** | governance.cpf.nft (control), cpf.nft (data) | Clean plane separation, authors dual identity | Authors need two II principals |
 | **4. Path-based routing** | All on cpf.nft, use /control, /data paths | Single domain | Doesn't work with derivation origins |
 
 **Decision:**
 **Control plane and data plane separation with author dual identities:**
 
-**Control Plane (authors.cpf.nft) - THIS REPO's PRIMARY FOCUS:**
+**Control Plane (governance.cpf.nft) - THIS REPO's PRIMARY FOCUS:**
 - **Purpose:** Infrastructure management, governance, strategic operations
 - **Who:** Board members, operations staff
 - **Operations:** Canister upgrades, ENS management, financial decisions, governance voting, cycle management
@@ -56,14 +56,14 @@ Internet Identity derivation origins enable separating these planes while allowi
 
 **Author Dual Identity Pattern:**
 Authors have **two Internet Identity principals** to participate in both planes:
-1. **authors.cpf.nft principal:** For control plane (governance, infrastructure)
+1. **governance.cpf.nft principal:** For control plane (governance, infrastructure)
 2. **cpf.nft principal:** For data plane (creating newsletters, moderating content)
 
-Example: Board member Alice logs into authors.cpf.nft to vote on canister upgrades, then logs into cpf.nft to create newsletter articles.
+Example: Board member Alice logs into governance.cpf.nft to vote on canister upgrades, then logs into cpf.nft to create newsletter articles.
 
 **Evolution path:**
 - **Phase 1 (Bootstrap):** All use cpf.nft (authorization-based)
-- **Phase 2 (Production):** Authors use authors.cpf.nft, public/members use cpf.nft
+- **Phase 2 (Production):** Authors use governance.cpf.nft, public/members use cpf.nft
 - **Phase 3 (Future):** May add additional subdomains if needed
 
 **Rationale:**
@@ -80,7 +80,7 @@ Example: Board member Alice logs into authors.cpf.nft to vote on canister upgrad
 - ✅ This repo's scope clearly defined (control plane)
 - ✅ Authors can operate in both planes
 - ⚠️ Authors need two Internet Identity principals (one per plane)
-- ⚠️ Need to manage two DNS configurations (cpf.nft + authors.cpf.nft)
+- ⚠️ Need to manage two DNS configurations (cpf.nft + governance.cpf.nft)
 - ⚠️ Cross-plane operations need inter-canister calls
 
 **References:**
@@ -113,7 +113,7 @@ CPP platform runs on IC, but cpf.nft ENS NFT lives on Ethereum. Where should gov
 **Decision:**
 **ICP-centric governance with chain-key control of ENS:**
 - All governance (canister upgrades, ENS updates, etc.) via IC multi-sig
-- Board votes using authors.cpf.nft Internet Identity principals
+- Board votes using governance.cpf.nft Internet Identity principals
 - Governance canister uses chain-key ECDSA to derive Ethereum address
 - ICP-derived Ethereum address owns cpf.nft ENS NFT
 - Same 3-of-3 board approval for both IC and Ethereum actions
@@ -273,30 +273,30 @@ Phase 2: SNS Governance (Mature)
 **Status:** ✅ **DECIDED** (2025-11-13)
 
 **Context:**
-We need both cpf.nft (parent) and authors.cpf.nft (subdomain). Which to set up first?
+We need both cpf.nft (parent) and governance.cpf.nft (subdomain). Which to set up first?
 
 **Problem:**
-- authors.cpf.nft is for board/operations (more privileged)
+- governance.cpf.nft is for board/operations (more privileged)
 - cpf.nft is for public/members (less privileged)
-- Does authors subdomain need to exist before parent is configured?
+- Does governance subdomain need to exist before parent is configured?
 
 **Options Considered:**
 
 | Option | Order | Rationale | Issue |
 |--------|-------|-----------|-------|
-| **1. authors.cpf.nft first** | Subdomain before parent | Bootstrap governance before users | ❌ ENS requires parent domain to exist before creating subdomain |
+| **1. governance.cpf.nft first** | Subdomain before parent | Bootstrap governance before users | ❌ ENS requires parent domain to exist before creating subdomain |
 | **2. cpf.nft first (CHOSEN)** | Parent then subdomain | Standard ENS workflow | ✅ Works with ENS architecture |
 | **3. Simultaneous** | Configure both at once | Fastest | ❌ Not possible - ENS requires parent first |
 
 **Decision:**
-**Standard ENS order: cpf.nft first, then authors.cpf.nft subdomain**
+**Standard ENS order: cpf.nft first, then governance.cpf.nft subdomain**
 
 Bootstrap sequence:
 1. Acquire cpf.nft ENS NFT
 2. Configure cpf.nft DNS → governance_canister (initially)
-3. Create authors.cpf.nft subdomain using ENS Manager
-4. Configure authors.cpf.nft DNS → governance_canister
-5. Board members authenticate with authors.cpf.nft
+3. Create governance.cpf.nft subdomain using ENS Manager
+4. Configure governance.cpf.nft DNS → governance_canister
+5. Board members authenticate with governance.cpf.nft
 6. Update cpf.nft DNS → user-facing canisters
 
 **Rationale:**
@@ -312,7 +312,7 @@ Bootstrap sequence:
 
 **References:**
 - [ens-dns-setup.md § Phase 1 (Acquire cpf.nft)](./ens-dns-setup.md)
-- [ens-dns-setup.md § Phase 2 (Create authors.cpf.nft subdomain)](./ens-dns-setup.md)
+- [ens-dns-setup.md § Phase 2 (Create governance.cpf.nft subdomain)](./ens-dns-setup.md)
 - [canister-architecture-diagram.md § Checkpoint 1 (Acquire cpf.nft)](./canister-architecture-diagram.md)
 
 ---
@@ -347,14 +347,14 @@ Level 1: Controller (dfx identity) - INFRASTRUCTURE
     ↓ Plane: Neither (bootstrap only)
     ↓ Bootstrap: dfx deploy with controller identity
     ↓
-Level 2: Authors (authors.cpf.nft) - CONTROL PLANE
+Level 2: Authors (governance.cpf.nft) - CONTROL PLANE
     ↓ Identity: Internet Identity principals
-    ↓ Derivation Origin: authors.cpf.nft
+    ↓ Derivation Origin: governance.cpf.nft
     ↓ Purpose: Governance, infrastructure management, strategic decisions
     ↓ Who: Board members, operations staff
     ↓ Operations: Canister upgrades, ENS management, financial decisions, cycle management
     ↓ Repo: cpp_icp_platform (THIS REPO)
-    ↓ Bootstrap: initializeBoardMembers() after authors.cpf.nft DNS configured
+    ↓ Bootstrap: initializeBoardMembers() after governance.cpf.nft DNS configured
     ↓
 Level 3: Public/Members (cpf.nft) - DATA PLANE
     ↓ Identity: Internet Identity principals
