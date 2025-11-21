@@ -71,4 +71,8 @@ Cargo.lock
 infrastructure/secrets/
 **/secrets/
 .env
-.env.local 
+.env.local
+
+# dfx local state
+.dfx/
+canister_ids.json 

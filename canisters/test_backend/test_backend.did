@@ -1,0 +1,24 @@
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+};
+
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  status_code : nat16;
+};
+
+type TestConfig = record {
+  gateway_principal : opt principal;
+  api_url : text;
+  log_level : text;
+};
+
+service : (TestConfig) -> {
+  get_config : () -> (TestConfig) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  update_config : (TestConfig) -> ();
+}

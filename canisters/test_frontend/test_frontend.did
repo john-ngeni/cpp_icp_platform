@@ -1,0 +1,30 @@
+type FrontendConfig = record {
+  gateway_principal : opt principal;
+  backend_canister_id : opt text;
+  api_url : text;
+  gateway_url : opt text;
+  log_level : text;
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  status_code : nat16;
+};
+service : (FrontendConfig) -> {
+  // Get current frontend configuration (for testing).
+  get_config : () -> (FrontendConfig) query;
+  // Serve HTTP requests.
+  // 
+  // Routes:
+  // - /env.js - Runtime config as JavaScript
+  // - /* - Static assets (placeholder in test canister)
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  // Update configuration (controllers only).
+  update_config : (FrontendConfig) -> ();
+}
