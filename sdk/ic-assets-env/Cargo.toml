@@ -1,0 +1,24 @@
+[package]
+name = "ic-assets-env"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fourth Transition Initiative"]
+description = "Custom IC asset canister with runtime /env.js injection"
+repository = "https://github.com/john-ngeni/cpp_icp_platform"
+license = "MIT"
+
+# NOTE: IP ownership vs operational responsibility
+# - Fourth Transition Initiative: IP owner, SDK library authors
+# - Cool Planet Foundation: Platform operator, legal responsibility
+# Bootstrap process must clarify IP licensing and operational control
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.13"
+ic-canister-core = { path = "../ic-canister-core" }
+ic-certified-assets = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

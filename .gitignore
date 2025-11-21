@@ -55,4 +55,20 @@ logs/
 *.tmp
 *.temp
 commit_message.txt
-commit_*.txt 
+commit_*.txt
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Secrets and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+infrastructure/secrets/
+**/secrets/
+.env
+.env.local 

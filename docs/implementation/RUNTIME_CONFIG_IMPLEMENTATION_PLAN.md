@@ -12,6 +12,41 @@ Transform runtime-config.md architecture into reusable Rust crates, establish de
 
 ---
 
+## IP Ownership and Operational Responsibility
+
+**Critical Distinction for Bootstrap:**
+
+**Authors (IP Owner):**
+- **Fourth Transition Initiative (FTI)**
+- Owns intellectual property for SDK libraries
+- Authors of ic-canister-core and ic-assets-env crates
+- Copyright holder for reusable infrastructure code
+
+**Operator (Legal Responsibility):**
+- **Cool Planet Foundation (CPF)**
+- Legal responsibility for platform operations
+- Manages regulatory compliance (KYC/AML, tax reporting, ANBI status)
+- Operates canisters and infrastructure
+
+**Bootstrap Questions to Clarify:**
+1. Who controls canister upgrades? (CPF or FTI-governed DAO?)
+2. Who holds ENS domain names? (cpf.nft owned by whom?)
+3. What is the licensing model for derivative works?
+4. How are governance decisions made about IP?
+5. Can CPF use FTI's SDK libraries under what terms?
+6. What happens if FTI/CPF relationship changes?
+
+**Proposed Model:**
+- FTI owns SDK libraries (MIT licensed, open source)
+- CPF operates platform using these libraries
+- Governance canister controls upgrades (board voting)
+- ENS domains held by CPF foundation (operational control)
+- IP licensing formalized in foundation documents
+
+This distinction must be documented in bootstrap process and governance policy.
+
+---
+
 ## Phase 1: SDK Library Structure
 
 ### 1.1 Create ic-canister-core Crate

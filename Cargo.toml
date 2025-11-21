@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = [
+    "sdk/ic-canister-core",
+    "sdk/ic-assets-env",
+    "canisters/test_backend",
+    "canisters/test_frontend",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Fourth Transition Initiative"]
+license = "MIT"
+repository = "https://github.com/john-ngeni/cpp_icp_platform"
+
+# IP Ownership and Operational Responsibility:
+# - Fourth Transition Initiative (FTI): IP owner, authors of SDK libraries
+# - Cool Planet Foundation (CPF): Platform operator, legal responsibility
+#
+# This distinction must be clarified during bootstrap:
+# - Who controls canister upgrades?
+# - Who holds ENS domain names?
+# - What is the licensing model for derivative works?
+# - How are governance decisions made about IP?
+#
+# See docs/implementation/RUNTIME_CONFIG_IMPLEMENTATION_PLAN.md for details.
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

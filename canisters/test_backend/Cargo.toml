@@ -1,0 +1,15 @@
+[package]
+name = "test_backend"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fourth Transition Initiative"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.13"
+ic-canister-core = { path = "../../sdk/ic-canister-core" }
+serde = "1.0"
+serde_json = "1.0"

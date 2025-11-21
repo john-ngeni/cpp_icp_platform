@@ -1,0 +1,13 @@
+[package]
+name = "test_frontend"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fourth Transition Initiative"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.13"
+ic-assets-env = { path = "../../sdk/ic-assets-env" }

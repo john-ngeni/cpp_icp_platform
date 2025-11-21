@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "canisters": {
+    "notifications": {
+      "type": "motoko",
+      "main": "canisters/notifications/main.mo"
+    },
+    "identity": {
+      "type": "motoko",
+      "main": "canisters/identity/main.mo"
+    },
+    "community": {
+      "type": "motoko",
+      "main": "canisters/community/main.mo"
+    },
+    "web": {
+      "type": "motoko",
+      "main": "canisters/web/main.mo"
+    },
+    "test_backend": {
+      "type": "rust",
+      "package": "test_backend",
+      "candid": "canisters/test_backend/test_backend.did"
+    },
+    "test_frontend": {
+      "type": "rust",
+      "package": "test_frontend",
+      "candid": "canisters/test_frontend/test_frontend.did"
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "ic": {
+      "providers": ["https://ic0.app"],
+      "type": "persistent"
+    }
+  }
+}
