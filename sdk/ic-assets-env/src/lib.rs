@@ -2,52 +2,47 @@
 //!
 //! Custom IC asset canister with runtime `/env.js` injection.
 //!
-//! ## Overview
+//! ## Trait-Based Opt-In System
 //!
-//! Extends `ic-canister-core` for frontend canisters by wrapping
-//! `ic-certified-assets` and adding dynamic `/env.js` endpoint for
-//! runtime configuration injection.
+//! ic-assets-env provides **optional traits** that canisters implement based on needs:
 //!
-//! ## Key Features
+//! - `LoggableConfig` - Log level configuration
+//! - `AnalyticsConfig` - Google Analytics integration
+//! - `ConsentConfig` - UserCentrics/consent management
+//! - `GatewayConfig` - Web2 gateway integration (Stripe)
+//! - `BackendConfig` - IC backend canister calls
+//! - `MemberPortalConfig` - Link to members portal
 //!
-//! - **Runtime Config Injection**: Serve `/env.js` with `window.__ENV__`
-//! - **Certified Assets**: Wrap `ic-certified-assets` for static file serving
-//! - **Single Build**: Same frontend dist deployed with different configs
-//! - **Type-Safe Config**: Frontend config using `EnvState<FrontendConfig>`
+//! **Required:** `EnvJsConfig` - Generate /env.js for your specific config
 //!
-//! ## Usage
+//! ## Example: cpf_org (Simple Public Site)
 //!
 //! ```rust,no_run
-//! use ic_assets_env::{FrontendConfig, http_request, init, post_upgrade};
+//! use ic_assets_env::{EnvJsConfig, LoggableConfig, MemberPortalConfig, AnalyticsConfig};
+//! use ic_canister_core::config::Config;
+//! use candid::{CandidType, Deserialize};
 //!
-//! #[ic_cdk::init]
-//! fn canister_init(config: FrontendConfig) {
-//!     init(config);
+//! #[derive(Clone, CandidType, Deserialize)]
+//! pub struct CpfOrgConfig {
+//!     pub log_level: String,
+//!     pub members_url: String,
+//!     pub ga_measurement_id: String,
 //! }
 //!
-//! #[ic_cdk::post_upgrade]
-//! fn canister_post_upgrade() {
-//!     post_upgrade();
+//! impl Config for CpfOrgConfig {}
+//! impl LoggableConfig for CpfOrgConfig {
+//!     fn log_level(&self) -> &str { &self.log_level }
 //! }
-//!
-//! #[ic_cdk::query]
-//! fn http_request(req: ic_assets_env::HttpRequest) -> ic_assets_env::HttpResponse {
-//!     ic_assets_env::http_request(req)
+//! impl MemberPortalConfig for CpfOrgConfig {
+//!     fn members_url(&self) -> &str { &self.members_url }
 //! }
-//! ```
-//!
-//! ## Frontend Integration (Svelte)
-//!
-//! ```html
-//! <!-- index.html -->
-//! <script src="/env.js"></script>
-//! <script type="module" src="/src/main.ts"></script>
-//! ```
-//!
-//! ```typescript
-//! // src/lib/env.ts
-//! export function getRuntimeEnv() {
-//!   return window.__ENV__ ?? {};
+//! impl AnalyticsConfig for CpfOrgConfig {
+//!     fn ga_measurement_id(&self) -> Option<&str> { Some(&self.ga_measurement_id) }
+//! }
+//! impl EnvJsConfig for CpfOrgConfig {
+//!     fn to_env_js(&self) -> String {
+//!         format!("window.__ENV__ = {{ MEMBERS_URL: \"{}\" }}", self.members_url)
+//!     }
 //! }
 //! ```
 //!
@@ -60,34 +55,18 @@
 //! Cool Planet Foundation (platform operator, legal responsibility)
 
 pub mod env;
-pub mod store;
 pub mod http;
+pub mod store;
 
-// Re-export commonly used types
-pub use env::FrontendConfig;
+// Re-export traits
+pub use env::{
+    AnalyticsConfig, BackendConfig, ConsentConfig, EnvJsConfig, GatewayConfig, LoggableConfig,
+    MemberPortalConfig, opt_str_to_js, opt_string_to_js,
+};
+
+// Re-export core types
+pub use ic_canister_core::config::Config;
 pub use ic_canister_core::http::{HttpRequest, HttpResponse};
 
-/// Initialize the asset canister with frontend configuration.
-///
-/// Should be called from `#[ic_cdk::init]`.
-pub fn init(config: FrontendConfig) {
-    env::init(config);
-    store::init();
-}
-
-/// Post-upgrade handler.
-///
-/// Should be called from `#[ic_cdk::post_upgrade]`.
-pub fn post_upgrade() {
-    env::post_upgrade();
-    store::post_upgrade();
-}
-
-/// HTTP request handler.
-///
-/// Serves `/env.js` for runtime config, delegates to asset store for static files.
-///
-/// Should be called from `#[ic_cdk::query]`.
-pub fn http_request(req: HttpRequest) -> HttpResponse {
-    http::handle_request(req)
-}
+// Note: No generic init/post_upgrade/http_request functions exported
+// Each canister implements these directly with their specific config type

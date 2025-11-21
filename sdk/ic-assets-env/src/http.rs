@@ -1,21 +1,50 @@
 //! HTTP request handling for asset canister with /env.js injection.
 //!
-//! Routes requests to either /env.js (dynamic) or asset store (static).
+//! Provides generic request handler that works with any config implementing EnvJsConfig.
 
-use ic_canister_core::http::{HttpRequest, HttpResponse, Router};
+use ic_canister_core::{
+    config::{Config, EnvState},
+    http::{HttpRequest, HttpResponse, Router},
+};
+use std::cell::RefCell;
 
-/// Handle HTTP request: serve /env.js or delegate to asset store.
+use crate::env::EnvJsConfig;
+
+/// Handle HTTP request with generic config type.
 ///
-/// ## Routes
+/// Routes:
+/// - `/env.js` - Dynamically generated from config.to_env_js()
+/// - `/*` - Static assets from store
 ///
-/// - `/env.js` - Dynamically generated runtime config
-/// - `/*` - Static assets from ic-certified-assets
-pub fn handle_request(req: HttpRequest) -> HttpResponse {
+/// ## Usage
+///
+/// ```rust,no_run
+/// use ic_assets_env::http::handle_request_with_state;
+/// use ic_canister_core::config::EnvState;
+/// use std::cell::RefCell;
+///
+/// thread_local! {
+///     static STATE: RefCell<EnvState<MyConfig>> = RefCell::new(EnvState::new());
+/// }
+///
+/// #[ic_cdk::query]
+/// fn http_request(req: HttpRequest) -> HttpResponse {
+///     handle_request_with_state(req, &STATE)
+/// }
+/// ```
+pub fn handle_request_with_state<T: EnvJsConfig>(
+    req: HttpRequest,
+    state: &'static std::thread::LocalKey<RefCell<EnvState<T>>>,
+) -> HttpResponse {
     let router = Router::new(&req);
 
     // Special route: /env.js (dynamically generated from config)
     if router.path("/env.js") {
-        let env_js = crate::env::generate_env_js();
+        let env_js = state.with(|s| {
+            let config = s.borrow().get().clone();
+            config.to_env_js()
+        });
+
         return HttpResponse::javascript(env_js.as_bytes())
             .with_header("cache-control", "no-cache, no-store, must-revalidate");
     }

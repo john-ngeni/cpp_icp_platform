@@ -1,126 +1,87 @@
-//! Frontend configuration management.
+//! Frontend configuration management with trait-based opt-in system.
 //!
-//! Extends ic-canister-core's EnvState for frontend-specific config.
+//! Provides optional traits that canisters can implement based on their needs.
 
-use candid::{CandidType, Deserialize, Principal};
-use ic_canister_core::{
-    config::{Config, EnvState},
-    stable,
-};
-use std::cell::RefCell;
+use candid::Principal;
+use ic_canister_core::config::Config;
 
-/// Frontend canister configuration.
+/// Optional trait: Logging configuration.
 ///
-/// Passed via init args at deployment time, exposed via `/env.js`
-/// to frontend JavaScript/TypeScript code.
-#[derive(Clone, CandidType, Deserialize)]
-pub struct FrontendConfig {
-    /// Backend API URL (e.g., "https://backend.cpf.nft")
-    pub api_url: String,
-
-    /// Log level for frontend (e.g., "debug", "info", "warn", "error")
-    pub log_level: String,
-
-    /// Backend canister ID (optional)
-    pub backend_canister_id: Option<String>,
-
-    /// Gateway URL for Web2 API integration (optional)
-    pub gateway_url: Option<String>,
-
-    /// Gateway principal for authenticated calls (optional)
-    pub gateway_principal: Option<Principal>,
+/// Implement if your canister needs configurable log level.
+pub trait LoggableConfig: Config {
+    fn log_level(&self) -> &str;
 }
 
-impl Config for FrontendConfig {}
-
-thread_local! {
-    static STATE: RefCell<EnvState<FrontendConfig>> = RefCell::new(EnvState::new());
-}
-
-/// Initialize frontend config state.
-pub fn init(config: FrontendConfig) {
-    STATE.with(|s| s.borrow_mut().init(config));
-}
-
-/// Get current frontend config.
-pub fn get() -> FrontendConfig {
-    STATE.with(|s| s.borrow().get().clone())
-}
-
-/// Update frontend config (controllers only).
-pub fn update(config: FrontendConfig) {
-    ic_canister_core::auth::require_controller();
-    STATE.with(|s| s.borrow_mut().update(config));
-}
-
-/// Save config to stable memory before upgrade.
-pub fn pre_upgrade() {
-    let config = get();
-    stable::stable_save(&config).expect("Failed to save frontend config");
-}
-
-/// Restore config from stable memory after upgrade.
-pub fn post_upgrade() {
-    let config: FrontendConfig = stable::stable_restore().expect("Failed to restore frontend config");
-    init(config);
-}
-
-/// Generate JavaScript code for `/env.js` endpoint.
+/// Optional trait: Analytics integration.
 ///
-/// Creates `window.__ENV__` object with config values.
-pub fn generate_env_js() -> String {
-    let config = get();
-
-    format!(
-        r#"// Runtime configuration injected by canister
-window.__ENV__ = {{
-  API_URL: "{}",
-  LOG_LEVEL: "{}",
-  BACKEND_CANISTER_ID: {},
-  GATEWAY_URL: {},
-  GATEWAY_PRINCIPAL: {}
-}};
-"#,
-        config.api_url,
-        config.log_level,
-        opt_string_to_js(&config.backend_canister_id),
-        opt_string_to_js(&config.gateway_url),
-        config.gateway_principal.map(|p| format!("\"{}\"", p.to_text())).unwrap_or_else(|| "null".to_string()),
-    )
+/// Implement if your canister uses Google Analytics or similar.
+pub trait AnalyticsConfig: Config {
+    fn ga_measurement_id(&self) -> Option<&str>;
 }
 
-/// Convert Option<String> to JavaScript value.
-fn opt_string_to_js(opt: &Option<String>) -> String {
+/// Optional trait: Consent management.
+///
+/// Implement if your canister uses UserCentrics or similar consent platform.
+pub trait ConsentConfig: Config {
+    fn usercentrics_settings_id(&self) -> Option<&str>;
+}
+
+/// Optional trait: Gateway integration.
+///
+/// Implement if your canister integrates with Web2 gateway (Stripe, etc.).
+pub trait GatewayConfig: Config {
+    fn gateway_url(&self) -> &str;
+    fn gateway_principal(&self) -> Principal;
+}
+
+/// Optional trait: Backend canister integration.
+///
+/// Implement if your frontend calls IC backend canisters.
+pub trait BackendConfig: Config {
+    fn backend_canister_id(&self) -> &str;
+    fn api_url(&self) -> &str;
+}
+
+/// Optional trait: Member portal link.
+///
+/// Implement if your canister (cpf_org) links to members portal (cpf_members).
+pub trait MemberPortalConfig: Config {
+    fn members_url(&self) -> &str;
+}
+
+/// Required trait: Environment JavaScript generation.
+///
+/// All frontend canisters MUST implement this to generate /env.js content.
+///
+/// ## Example
+///
+/// ```rust
+/// use ic_assets_env::EnvJsConfig;
+///
+/// impl EnvJsConfig for MyConfig {
+///     fn to_env_js(&self) -> String {
+///         format!(r#"window.__ENV__ = {{
+///   MY_FIELD: "{}"
+/// }};"#, self.my_field)
+///     }
+/// }
+/// ```
+pub trait EnvJsConfig: Config {
+    /// Generate JavaScript code for /env.js endpoint.
+    ///
+    /// Should create window.__ENV__ object with config values.
+    fn to_env_js(&self) -> String;
+}
+
+/// Helper function to convert Option<String> to JavaScript value.
+pub fn opt_string_to_js(opt: &Option<String>) -> String {
     opt.as_ref()
         .map(|s| format!("\"{}\"", s))
         .unwrap_or_else(|| "null".to_string())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_generate_env_js() {
-        let config = FrontendConfig {
-            api_url: "https://api.example.com".to_string(),
-            log_level: "info".to_string(),
-            backend_canister_id: Some("abc123-cai".to_string()),
-            gateway_url: None,
-            gateway_principal: None,
-        };
-
-        // Can't fully test without STATE, but can test the function exists
-        let js = format!(
-            "API_URL: \"{}\", LOG_LEVEL: \"{}\"",
-            config.api_url, config.log_level
-        );
-        assert!(js.contains("https://api.example.com"));
-    }
-
-    #[test]
-    fn test_opt_string_to_js() {
-        assert_eq!(opt_string_to_js(&Some("test".to_string())), "\"test\"");
-        assert_eq!(opt_string_to_js(&None), "null");
-    }
+/// Helper function to convert Option<&str> to JavaScript value.
+pub fn opt_str_to_js(opt: Option<&str>) -> String {
+    opt.map(|s| format!("\"{}\"", s))
+        .unwrap_or_else(|| "null".to_string())
 }

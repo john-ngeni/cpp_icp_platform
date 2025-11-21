@@ -11,3 +11,5 @@ crate-type = ["cdylib"]
 candid = "0.10"
 ic-cdk = "0.13"
 ic-assets-env = { path = "../../sdk/ic-assets-env" }
+serde = { version = "1.0", features = ["derive"] }
+ic-canister-core = { path = "../../sdk/ic-canister-core" }
