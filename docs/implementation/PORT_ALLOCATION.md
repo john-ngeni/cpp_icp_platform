@@ -2,6 +2,21 @@
 
 **Purpose:** Prevent port conflicts when running multiple repos locally
 **Maintained by:** cpp_icp_platform (coordination repo)
+**Source of Truth:** config/ports.dhall (Dhall config with imports)
+
+---
+
+## Dhall Config System
+
+Port allocation is defined in **config/ports.dhall** (Dhall format).
+
+Repos import this file to get their assigned ports:
+```dhall
+let ports = ../../cpp_icp_platform/config/ports.dhall
+in ports.cpf_org  -- { dfx = 8002, vite = 3001 }
+```
+
+See **tools/dhall-config.js** for config utility.
 
 ---
 
